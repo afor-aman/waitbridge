@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Upload, Type, Palette, LayoutTemplate, Square, Circle, MousePointerClick } from 'lucide-react';
+import { Upload, Type, Palette, LayoutTemplate, Square, Circle, MousePointerClick, LayoutDashboard, User, ChevronDown } from 'lucide-react';
 
 interface EditorState {
     headerText: string;
@@ -54,6 +54,8 @@ const GRADIENTS = [
 
 
 export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
+    const [openSection, setOpenSection] = useState<string>('content');
+
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -65,84 +67,130 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
         }
     };
 
+    const toggleSection = (section: string) => {
+        setOpenSection(openSection === section ? '' : section);
+    };
+
     return (
-        <div className="flex flex-col gap-8 p-8 pb-20">
-            <div className="space-y-1">
-                <h2 className="text-xl font-bold tracking-tight">Editor</h2>
-                <p className="text-sm text-muted-foreground">Customize your waitlist page.</p>
+        <div className="flex flex-col h-full">
+            {/* Header with Profile and Dashboard */}
+            <div className="shrink-0 border-b border-zinc-200 dark:border-zinc-800 p-6 bg-white dark:bg-zinc-900/50">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                        {/* Profile Avatar */}
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shadow-md">
+                            <User className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">John Doe</p>
+                            <p className="text-xs text-muted-foreground">john@example.com</p>
+                        </div>
+                    </div>
+                </div>
+                {/* Dashboard Link */}
+                <a 
+                    href="#" 
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-sm font-medium"
+                >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Dashboard</span>
+                </a>
             </div>
 
-            <div className="space-y-8">
-                {/* Content Section */}
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm font-medium text-primary/80 uppercase tracking-wider">
-                        <Type className="w-4 h-4" />
-                        <span>Content</span>
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto">
+                <div className="flex flex-col gap-8 p-8 pb-20">
+                    <div className="space-y-1">
+                        <h2 className="text-xl font-bold tracking-tight">Editor</h2>
+                        <p className="text-sm text-muted-foreground">Customize your waitlist page.</p>
                     </div>
-                    <div className="grid gap-4 pl-2 border-l-2 border-border/50">
-                        <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="headerText" className="text-xs font-semibold text-muted-foreground">Header Text</Label>
-                            <Input
-                                type="text"
-                                id="headerText"
-                                value={state.headerText}
-                                onChange={(e) => onChange('headerText', e.target.value)}
-                                className="bg-background/50 focus:bg-background transition-all"
-                            />
-                        </div>
 
-                        <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="subText" className="text-xs font-semibold text-muted-foreground">Subtext</Label>
-                            <Textarea
-                                id="subText"
-                                value={state.subText}
-                                onChange={(e) => onChange('subText', e.target.value)}
-                                className="bg-background/50 focus:bg-background transition-all min-h-[150px] resize-none"
-                            />
-                        </div>
+                    <div className="space-y-8">
+                        {/* Content Section */}
+                        <div className="space-y-4">
+                            <button
+                                onClick={() => toggleSection('content')}
+                                className="flex items-center justify-between w-full text-sm font-medium text-primary/80 uppercase tracking-wider hover:text-primary transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Type className="w-4 h-4" />
+                                    <span>Content</span>
+                                </div>
+                                <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'content' ? 'rotate-180' : ''}`} />
+                            </button>
+                            {openSection === 'content' && (
+                                <div className="grid gap-4 pl-2 border-l-2 border-border/50">
+                         <div className="grid w-full items-center gap-2">
+                             <Label htmlFor="headerText" className="text-xs font-semibold text-muted-foreground">Header Text</Label>
+                             <Input
+                                 type="text"
+                                 id="headerText"
+                                 value={state.headerText}
+                                 onChange={(e) => onChange('headerText', e.target.value)}
+                                 className="bg-background/50 focus:bg-background transition-all"
+                             />
+                         </div>
 
                          <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="buttonText" className="text-xs font-semibold text-muted-foreground">Button Text</Label>
-                            <Input
-                                type="text"
-                                id="buttonText"
-                                value={state.buttonText}
-                                onChange={(e) => onChange('buttonText', e.target.value)}
-                                className="bg-background/50 focus:bg-background transition-all"
-                            />
-                        </div>
+                             <Label htmlFor="subText" className="text-xs font-semibold text-muted-foreground">Subtext</Label>
+                             <Textarea
+                                 id="subText"
+                                 value={state.subText}
+                                 onChange={(e) => onChange('subText', e.target.value)}
+                                 className="bg-background/50 focus:bg-background transition-all min-h-[150px] resize-none"
+                             />
+                         </div>
+
+                          <div className="grid w-full items-center gap-2">
+                             <Label htmlFor="buttonText" className="text-xs font-semibold text-muted-foreground">Button Text</Label>
+                             <Input
+                                 type="text"
+                                 id="buttonText"
+                                 value={state.buttonText}
+                                 onChange={(e) => onChange('buttonText', e.target.value)}
+                                 className="bg-background/50 focus:bg-background transition-all"
+                             />
+                         </div>
+
+                          <div className="grid w-full items-center gap-2">
+                             <Label htmlFor="inputPlaceholder" className="text-xs font-semibold text-muted-foreground">Input Placeholder Text</Label>
+                             <Input
+                                 type="text"
+                                 id="inputPlaceholder"
+                                 value={state.inputPlaceholder}
+                                 onChange={(e) => onChange('inputPlaceholder', e.target.value)}
+                                 className="bg-background/50 focus:bg-background transition-all"
+                             />
+                         </div>
 
                          <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="inputPlaceholder" className="text-xs font-semibold text-muted-foreground">Input Placeholder Text</Label>
-                            <Input
-                                type="text"
-                                id="inputPlaceholder"
-                                value={state.inputPlaceholder}
-                                onChange={(e) => onChange('inputPlaceholder', e.target.value)}
-                                className="bg-background/50 focus:bg-background transition-all"
-                            />
-                        </div>
-
-                        <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="submissionMessage" className="text-xs font-semibold text-muted-foreground">Success Message</Label>
-                            <Input
-                                type="text"
-                                id="submissionMessage"
-                                value={state.submissionMessage}
+                             <Label htmlFor="submissionMessage" className="text-xs font-semibold text-muted-foreground">Success Message</Label>
+                             <Input
+                                 type="text"
+                                 id="submissionMessage"
+                                 value={state.submissionMessage}
                                 onChange={(e) => onChange('submissionMessage', e.target.value)}
                                 className="bg-background/50 focus:bg-background transition-all"
                             />
                         </div>
                     </div>
+                            )}
                 </div>
 
                 {/* Typography & Layout Section */}
                 <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm font-medium text-primary/80 uppercase tracking-wider">
-                        <LayoutTemplate className="w-4 h-4" />
-                        <span>Layout & Type</span>
-                    </div>
-                    <div className="grid gap-4 pl-2 border-l-2 border-border/50">
+                    <button
+                        onClick={() => toggleSection('typography')}
+                        className="flex items-center justify-between w-full text-sm font-medium text-primary/80 uppercase tracking-wider hover:text-primary transition-colors"
+                    >
+                        <div className="flex items-center gap-2">
+                            <LayoutTemplate className="w-4 h-4" />
+                            <span>Layout & Type</span>
+                        </div>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'typography' ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openSection === 'typography' && (
+                        <div className="grid gap-4 pl-2 border-l-2 border-border/50">
                         <div className="grid w-full items-center gap-2">
                             <Label className="text-xs font-semibold text-muted-foreground">Font Family</Label>
                             <Select value={state.font} onValueChange={(value) => onChange('font', value)}>
@@ -160,15 +208,23 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                         </div>
 
                     </div>
+                    )}
                 </div>
 
                 {/* Appearance Section */}
                 <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm font-medium text-primary/80 uppercase tracking-wider">
-                        <Palette className="w-4 h-4" />
-                        <span>Appearance</span>
-                    </div>
-                    <div className="grid gap-4 pl-2 border-l-2 border-border/50">
+                    <button
+                        onClick={() => toggleSection('appearance')}
+                        className="flex items-center justify-between w-full text-sm font-medium text-primary/80 uppercase tracking-wider hover:text-primary transition-colors"
+                    >
+                        <div className="flex items-center gap-2">
+                            <Palette className="w-4 h-4" />
+                            <span>Appearance</span>
+                        </div>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'appearance' ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openSection === 'appearance' && (
+                        <div className="grid gap-4 pl-2 border-l-2 border-border/50">
                         <div className="grid w-full items-center gap-2">
                             <Label className="text-xs font-semibold text-muted-foreground">Background Type</Label>
                             <div className="flex gap-2">
@@ -347,7 +403,10 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                             </div>
                         </div>
                     </div>
+                    )}
                 </div>
+                </div>
+            </div>
             </div>
         </div>
     );
