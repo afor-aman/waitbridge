@@ -17,6 +17,7 @@ interface EditorState {
     buttonStyle: 'rounded' | 'pill' | 'sharp';
     buttonText: string;
     buttonColor: string;
+    buttonTextColor: string;
     inputColor: string;
     inputPlaceholderColor: string;
     inputPlaceholder: string;
@@ -103,11 +104,26 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="flex gap-2 max-w-md items-center m-auto relative group">
-                                <style jsx>{`
-                                    input[type="email"]::placeholder {
-                                        color: ${state.inputPlaceholderColor};
-                                    }
-                                `}</style>
+                                <style dangerouslySetInnerHTML={{
+                                    __html: `
+                                        .custom-email-input::placeholder {
+                                            color: ${state.inputPlaceholderColor} !important;
+                                            opacity: 1;
+                                        }
+                                        .custom-email-input::-webkit-input-placeholder {
+                                            color: ${state.inputPlaceholderColor} !important;
+                                            opacity: 1;
+                                        }
+                                        .custom-email-input::-moz-placeholder {
+                                            color: ${state.inputPlaceholderColor} !important;
+                                            opacity: 1;
+                                        }
+                                        .custom-email-input:-ms-input-placeholder {
+                                            color: ${state.inputPlaceholderColor} !important;
+                                            opacity: 1;
+                                        }
+                                    `
+                                }} />
                                 <Input
                                     type="email"
                                     placeholder={state.inputPlaceholder}
@@ -115,7 +131,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className={cn(
-                                        "h-12 pl-4 pr-32 transition-all backdrop-blur-sm shadow-sm",
+                                        "custom-email-input h-12 pl-4 pr-32 transition-all backdrop-blur-sm shadow-sm",
                                         state.buttonStyle === 'rounded' && "rounded-md",
                                         state.buttonStyle === 'pill' && "rounded-full",
                                         state.buttonStyle === 'sharp' && "rounded-none",
@@ -134,7 +150,10 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                                         state.buttonStyle === 'pill' && "rounded-full",
                                         state.buttonStyle === 'sharp' && "rounded-none",
                                     )}
-                                    style={{ backgroundColor: state.buttonColor }}
+                                    style={{ 
+                                        backgroundColor: state.buttonColor,
+                                        color: state.buttonTextColor,
+                                    }}
                                 >
                                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : state.buttonText}
                                 </Button>

@@ -18,6 +18,7 @@ interface EditorState {
     buttonStyle: 'rounded' | 'pill' | 'sharp';
     buttonText: string;
     buttonColor: string;
+    buttonTextColor: string;
     inputColor: string;
     inputPlaceholderColor: string;
     inputPlaceholder: string;
@@ -228,6 +229,27 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                     type="text"
                                     value={state.buttonColor}
                                     onChange={(e) => onChange('buttonColor', e.target.value)}
+                                    className="flex-1 font-mono text-xs"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="buttonTextColor" className="text-xs font-semibold text-muted-foreground">Button Text Color</Label>
+                            <div className="flex gap-2 items-center">
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-border shadow-sm">
+                                    <Input
+                                        type="color"
+                                        id="buttonTextColor"
+                                        value={state.buttonTextColor}
+                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                        onChange={(e) => onChange('buttonTextColor', e.target.value)}
+                                    />
+                                </div>
+                                <Input
+                                    type="text"
+                                    value={state.buttonTextColor}
+                                    onChange={(e) => onChange('buttonTextColor', e.target.value)}
                                     className="flex-1 font-mono text-xs"
                                 />
                             </div>

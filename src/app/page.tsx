@@ -19,6 +19,7 @@ interface EditorState {
   buttonStyle: 'rounded' | 'pill' | 'sharp';
   buttonText: string;
   buttonColor: string;
+  buttonTextColor: string;
   inputColor: string;
   inputPlaceholderColor: string;
   inputPlaceholder: string;
@@ -38,6 +39,7 @@ const INITIAL_STATE: EditorState = {
   buttonStyle: 'pill',
   buttonText: 'Join',
   buttonColor: '#000000',
+  buttonTextColor: '#ffffff',
   inputColor: '#ffffff',
   inputPlaceholderColor: '#999999',
   inputPlaceholder: 'Enter your email',
