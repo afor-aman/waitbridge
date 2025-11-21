@@ -52,7 +52,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
     return (
         <div className="relative w-full h-full rounded-xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-all duration-500 ease-in-out flex flex-col">
             {/* Browser Bar Mockup */}
-            <div className="flex-shrink-0 h-8 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center px-4 gap-2 z-10">
+            <div className="shrink-0 h-8 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center px-4 gap-2 z-10">
                 <div className="w-3 h-3 rounded-full bg-red-400/80" />
                 <div className="w-3 h-3 rounded-full bg-amber-400/80" />
                 <div className="w-3 h-3 rounded-full bg-green-400/80" />
@@ -74,7 +74,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                 style={{ ...bgProps.style, color: state.textColor }}
             >
                 <div className={cn(
-                    "w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-700 slide-in-from-bottom-4",
+                    "w-full max-w-lg space-y-8 animate-in fade-in zoom-in duration-700 slide-in-from-bottom-4",
                     state.layout === 'center' ? "mx-auto" : ""
                 )}>
                     {state.logo && (
@@ -89,7 +89,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                     )}
 
                     <div className="space-y-4">
-                        <h1 className="text-5xl font-bold tracking-tight sm:text-6xl transition-colors duration-300" style={{ color: state.textColor }}>
+                        <h1 className="text-5xl  font-bold tracking-tight sm:text-6xl transition-colors duration-300" style={{ color: state.textColor }}>
                             {state.headerText}
                         </h1>
                         <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300" style={{ color: state.textColor }}>
@@ -110,7 +110,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                                 {state.submissionMessage}
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="flex gap-2 max-w-sm items-center relative group">
+                            <form onSubmit={handleSubmit} className="flex gap-2 max-w-md items-center m-auto relative group">
                                 <Input
                                     type="email"
                                     placeholder="Enter your email"
