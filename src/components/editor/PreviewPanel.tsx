@@ -47,6 +47,12 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
 
     const getBackgroundStyle = () => {
         if (state.bgType === 'gradient') {
+            // Check if it's a custom CSS gradient
+            if (state.bgGradient.startsWith('css:')) {
+                const cssGradient = state.bgGradient.replace('css:', '');
+                return { style: { backgroundImage: cssGradient } };
+            }
+            // Otherwise use Tailwind classes for preset gradients
             return { className: `bg-gradient-to-br ${state.bgGradient}` };
         }
         return { style: { backgroundColor: state.bgColor } };

@@ -50,11 +50,38 @@ const GRADIENTS = [
     { name: 'Ocean', value: 'from-blue-400 to-emerald-400' },
     { name: 'Midnight', value: 'from-slate-900 to-slate-700' },
     { name: 'Purple Haze', value: 'from-purple-500 to-indigo-500' },
+    { name: 'Forest', value: 'from-green-600 to-teal-500' },
+    { name: 'Custom', value: 'custom' },
 ];
+
+const GRADIENT_DIRECTIONS = [
+    { name: 'To Right', value: 'to-r' },
+    { name: 'To Left', value: 'to-l' },
+    { name: 'To Bottom', value: 'to-b' },
+    { name: 'To Top', value: 'to-t' },
+    { name: 'To Bottom Right', value: 'to-br' },
+    { name: 'To Bottom Left', value: 'to-bl' },
+    { name: 'To Top Right', value: 'to-tr' },
+    { name: 'To Top Left', value: 'to-tl' },
+];
+
 
 
 export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
     const [openSection, setOpenSection] = useState<string>('content');
+    const [isCustomGradient, setIsCustomGradient] = useState(false);
+    const [customGradient, setCustomGradient] = useState({
+        color1: '#3b82f6',
+        color2: '#8b5cf6',
+        color3: '#ec4899',
+        direction: 'to-br', // Kept for backward compatibility/presets
+        type: 'linear',
+        angle: 135,
+        pos1: 0,
+        pos2: 50,
+        pos3: 100,
+        colorCount: 2
+    });
 
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -71,6 +98,45 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
         setOpenSection(openSection === section ? '' : section);
     };
 
+    const handleGradientSelect = (gradientValue: string) => {
+        if (gradientValue === 'custom') {
+            setIsCustomGradient(true);
+            // Initialize with current custom gradient
+            updateCustomGradient('colorCount', customGradient.colorCount);
+        } else {
+            setIsCustomGradient(false);
+            onChange('bgGradient', gradientValue);
+        }
+    };
+
+    const updateCustomGradient = (key: string, value: any) => {
+        const updated = { ...customGradient, [key]: value };
+        setCustomGradient(updated);
+        
+        // Generate CSS gradient string for inline styles
+        const { color1, color2, color3, type, angle, pos1, pos2, pos3, colorCount } = updated;
+        
+        let gradientCSS = '';
+        
+        if (type === 'radial') {
+             if (colorCount === 2) {
+                gradientCSS = `radial-gradient(circle at center, ${color1} ${pos1}%, ${color2} ${pos2}%)`;
+            } else {
+                gradientCSS = `radial-gradient(circle at center, ${color1} ${pos1}%, ${color2} ${pos2}%, ${color3} ${pos3}%)`;
+            }
+        } else {
+            // Linear
+            if (colorCount === 2) {
+                gradientCSS = `linear-gradient(${angle}deg, ${color1} ${pos1}%, ${color2} ${pos2}%)`;
+            } else {
+                gradientCSS = `linear-gradient(${angle}deg, ${color1} ${pos1}%, ${color2} ${pos2}%, ${color3} ${pos3}%)`;
+            }
+        }
+        
+        // Store as CSS gradient string with a special prefix to identify it
+        onChange('bgGradient', `css:${gradientCSS}`);
+    };
+
     return (
         <div className="flex flex-col h-full">
             {/* Header with Profile and Dashboard */}
@@ -78,7 +144,7 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                         {/* Profile Avatar */}
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shadow-md">
+                        <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shadow-md">
                             <User className="w-5 h-5" />
                         </div>
                         <div>
@@ -262,18 +328,172 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                 </div>
                             </div>
                         ) : (
-                            <div className="grid w-full items-center gap-2">
-                                <Label className="text-xs font-semibold text-muted-foreground">Gradient Preset</Label>
-                                <div className="grid grid-cols-2 gap-2">
-                                    {GRADIENTS.map((gradient) => (
-                                        <button
-                                            key={gradient.name}
-                                            onClick={() => onChange('bgGradient', gradient.value)}
-                                            className={`h-10 rounded-md bg-gradient-to-r ${gradient.value} border-2 transition-all ${state.bgGradient === gradient.value ? 'border-primary scale-105' : 'border-transparent hover:scale-105'}`}
-                                            title={gradient.name}
-                                        />
-                                    ))}
+                            <div className="grid w-full items-center gap-4">
+                                <div>
+                                    <Label className="text-xs font-semibold text-muted-foreground">Gradient Preset</Label>
+                                    <div className="grid grid-cols-2 gap-2 mt-2">
+                                        {GRADIENTS.map((gradient) => (
+                                            <button
+                                                key={gradient.name}
+                                                onClick={() => handleGradientSelect(gradient.value)}
+                                                className={`h-10 rounded-md ${gradient.value === 'custom' ? 'border-2 border-dashed flex items-center justify-center text-xs font-medium' : `bg-linear-to-r ${gradient.value} border-2`} transition-all ${(gradient.value === 'custom' && isCustomGradient) || state.bgGradient === gradient.value ? 'border-primary scale-105' : 'border-transparent hover:scale-105'}`}
+                                                title={gradient.name}
+                                            >
+                                                {gradient.value === 'custom' && 'Custom'}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
+
+                                {/* Custom Gradient Builder */}
+                                {isCustomGradient && (
+                                    <div className="space-y-3 p-3 border border-border rounded-lg bg-muted/30">
+                                        <Label className="text-xs font-semibold">Custom Gradient</Label>
+                                        
+                                        {/* Color Count Toggle */}
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => updateCustomGradient('colorCount', 2)}
+                                                className={`flex-1 px-3 py-1.5 text-xs rounded-md transition-all ${customGradient.colorCount === 2 ? 'bg-primary text-primary-foreground' : 'bg-background hover:bg-muted'}`}
+                                            >
+                                                2 Colors
+                                            </button>
+                                            <button
+                                                onClick={() => updateCustomGradient('colorCount', 3)}
+                                                className={`flex-1 px-3 py-1.5 text-xs rounded-md transition-all ${customGradient.colorCount === 3 ? 'bg-primary text-primary-foreground' : 'bg-background hover:bg-muted'}`}
+                                            >
+                                                3 Colors
+                                            </button>
+                                        </div>
+
+                                        {/* Gradient Type & Angle */}
+                                        <div className="space-y-3 pt-2 border-t border-border/50">
+                                            <div>
+                                                <Label className="text-xs font-semibold text-muted-foreground mb-2 block">Type</Label>
+                                                <div className="flex bg-background rounded-md border border-border p-1">
+                                                    <button
+                                                        onClick={() => updateCustomGradient('type', 'linear')}
+                                                        className={`flex-1 px-2 py-1 text-xs rounded-sm transition-all ${customGradient.type === 'linear' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                                                    >
+                                                        Linear
+                                                    </button>
+                                                    <button
+                                                        onClick={() => updateCustomGradient('type', 'radial')}
+                                                        className={`flex-1 px-2 py-1 text-xs rounded-sm transition-all ${customGradient.type === 'radial' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                                                    >
+                                                        Radial
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            {customGradient.type === 'linear' && (
+                                                <div>
+                                                    <Label className="text-xs font-semibold text-muted-foreground mb-2 block">Angle: {customGradient.angle}°</Label>
+                                                    <div className="flex items-center h-[34px]">
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="360"
+                                                            value={customGradient.angle}
+                                                            onChange={(e) => updateCustomGradient('angle', parseInt(e.target.value))}
+                                                            className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Color Pickers with Positions */}
+                                        <div className="space-y-3 pt-2 border-t border-border/50">
+                                            <Label className="text-xs font-semibold text-muted-foreground">Colors & Positions</Label>
+                                            
+                                            <div className="space-y-3">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shrink-0">
+                                                            <Input
+                                                                type="color"
+                                                                value={customGradient.color1}
+                                                                onChange={(e) => updateCustomGradient('color1', e.target.value)}
+                                                                className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                            />
+                                                        </div>
+                                                        <div className="flex-1 flex flex-col gap-1">
+                                                            <div className="flex justify-between text-[10px] text-muted-foreground">
+                                                                <span>Color 1</span>
+                                                                <span>{customGradient.pos1}%</span>
+                                                            </div>
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="100"
+                                                                value={customGradient.pos1}
+                                                                onChange={(e) => updateCustomGradient('pos1', parseInt(e.target.value))}
+                                                                className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shrink-0">
+                                                            <Input
+                                                                type="color"
+                                                                value={customGradient.color2}
+                                                                onChange={(e) => updateCustomGradient('color2', e.target.value)}
+                                                                className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                            />
+                                                        </div>
+                                                        <div className="flex-1 flex flex-col gap-1">
+                                                            <div className="flex justify-between text-[10px] text-muted-foreground">
+                                                                <span>Color 2</span>
+                                                                <span>{customGradient.pos2}%</span>
+                                                            </div>
+                                                            <input
+                                                                type="range"
+                                                                min="0"
+                                                                max="100"
+                                                                value={customGradient.pos2}
+                                                                onChange={(e) => updateCustomGradient('pos2', parseInt(e.target.value))}
+                                                                className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {customGradient.colorCount === 3 && (
+                                                    <div className="space-y-1">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shrink-0">
+                                                                <Input
+                                                                    type="color"
+                                                                    value={customGradient.color3}
+                                                                    onChange={(e) => updateCustomGradient('color3', e.target.value)}
+                                                                    className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            <div className="flex-1 flex flex-col gap-1">
+                                                                <div className="flex justify-between text-[10px] text-muted-foreground">
+                                                                    <span>Color 3</span>
+                                                                    <span>{customGradient.pos3}%</span>
+                                                                </div>
+                                                                <input
+                                                                    type="range"
+                                                                    min="0"
+                                                                    max="100"
+                                                                    value={customGradient.pos3}
+                                                                    onChange={(e) => updateCustomGradient('pos3', parseInt(e.target.value))}
+                                                                    className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 

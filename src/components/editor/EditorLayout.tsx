@@ -39,7 +39,7 @@ export function EditorLayout({ children, controls }: EditorLayoutProps) {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans">
       {/* Sidebar Controls */}
-      <aside className="w-[400px] flex-shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 backdrop-blur-xl overflow-y-auto z-10 shadow-xl shadow-zinc-200/50 dark:shadow-none">
+      <aside className="w-[400px] shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 backdrop-blur-xl overflow-y-auto z-10 shadow-xl shadow-zinc-200/50 dark:shadow-none">
         {controls}
       </aside>
 
@@ -95,12 +95,12 @@ export function EditorLayout({ children, controls }: EditorLayoutProps) {
 
         {/* Preview Content */}
         <div ref={previewRef} className="flex-1 relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid-zinc-200/50 dark:bg-grid-zinc-800/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
+          <div className="absolute inset-0 bg-grid-zinc-200/50 dark:bg-grid-zinc-800/50 mask-[linear-gradient(0deg,white,rgba(255,255,255,0.6))] pointer-events-none" />
           <div className="relative w-full h-full flex items-center justify-center p-6">
             {viewMode === 'mobile' ? (
               <div className="relative">
                 {/* Phone Frame */}
-                <div className="relative w-[375px] h-[812px] bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-[3.5rem] p-3 shadow-2xl ring-1 ring-zinc-700/50">
+                <div className="relative w-[375px] h-[812px] bg-linear-to-br from-zinc-800 to-zinc-900 rounded-[3.5rem] p-3 shadow-2xl ring-1 ring-zinc-700/50">
                   {/* Volume Buttons */}
                   <div className="absolute -left-[3px] top-28 w-[3px] h-8 bg-zinc-700 rounded-l-lg" />
                   <div className="absolute -left-[3px] top-40 w-[3px] h-8 bg-zinc-700 rounded-l-lg" />
@@ -111,12 +111,12 @@ export function EditorLayout({ children, controls }: EditorLayoutProps) {
                   {/* Inner bezel */}
                   <div className="relative w-full h-full bg-black rounded-[3rem] p-[2px]">
                     {/* Dynamic Island / Notch */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[30px] bg-black rounded-b-[1.5rem] z-20 shadow-lg" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[30px] bg-black rounded-b-3xl z-20 shadow-lg" />
                     
                     {/* Screen */}
                     <div className="relative w-full h-full bg-white rounded-[2.8rem] overflow-hidden shadow-inner">
                       {/* Status bar overlay for realism */}
-                      <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black/5 to-transparent pointer-events-none z-10" />
+                      <div className="absolute top-0 left-0 right-0 h-12 bg-linear-to-b from-black/5 to-transparent pointer-events-none z-10" />
                       
                       {/* Content */}
                       <div className="w-full h-full overflow-auto">
@@ -126,7 +126,7 @@ export function EditorLayout({ children, controls }: EditorLayoutProps) {
                   </div>
                   
                   {/* Shine effect */}
-                  <div className="absolute inset-0 rounded-[3.5rem] bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none" />
+                  <div className="absolute inset-0 rounded-[3.5rem] bg-linear-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none" />
                 </div>
                 
                 {/* Phone shadow */}
