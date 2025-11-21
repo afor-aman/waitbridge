@@ -17,6 +17,9 @@ interface EditorState {
     buttonStyle: 'rounded' | 'pill' | 'sharp';
     buttonText: string;
     buttonColor: string;
+    inputColor: string;
+    inputPlaceholderColor: string;
+    inputPlaceholder: string;
 }
 
 interface PreviewPanelProps {
@@ -100,9 +103,14 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="flex gap-2 max-w-md items-center m-auto relative group">
+                                <style jsx>{`
+                                    input[type="email"]::placeholder {
+                                        color: ${state.inputPlaceholderColor};
+                                    }
+                                `}</style>
                                 <Input
                                     type="email"
-                                    placeholder="Enter your email"
+                                    placeholder={state.inputPlaceholder}
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -112,7 +120,10 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                                         state.buttonStyle === 'pill' && "rounded-full",
                                         state.buttonStyle === 'sharp' && "rounded-none",
                                     )}
-                                    style={{ color: state.textColor === '#ffffff' ? '#fff' : '#000' }}
+                                    style={{ 
+                                        backgroundColor: state.inputColor,
+                                        color: state.textColor === '#ffffff' ? '#fff' : '#000',
+                                    }}
                                 />
                                 <Button
                                     type="submit"

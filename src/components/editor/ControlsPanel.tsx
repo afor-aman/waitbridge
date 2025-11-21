@@ -18,6 +18,9 @@ interface EditorState {
     buttonStyle: 'rounded' | 'pill' | 'sharp';
     buttonText: string;
     buttonColor: string;
+    inputColor: string;
+    inputPlaceholderColor: string;
+    inputPlaceholder: string;
 }
 
 interface ControlsPanelProps {
@@ -228,6 +231,59 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                     className="flex-1 font-mono text-xs"
                                 />
                             </div>
+                        </div>
+
+                        <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="inputColor" className="text-xs font-semibold text-muted-foreground">Input Background Color</Label>
+                            <div className="flex gap-2 items-center">
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-border shadow-sm">
+                                    <Input
+                                        type="color"
+                                        id="inputColor"
+                                        value={state.inputColor}
+                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                        onChange={(e) => onChange('inputColor', e.target.value)}
+                                    />
+                                </div>
+                                <Input
+                                    type="text"
+                                    value={state.inputColor}
+                                    onChange={(e) => onChange('inputColor', e.target.value)}
+                                    className="flex-1 font-mono text-xs"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="inputPlaceholderColor" className="text-xs font-semibold text-muted-foreground">Input Placeholder Color</Label>
+                            <div className="flex gap-2 items-center">
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-border shadow-sm">
+                                    <Input
+                                        type="color"
+                                        id="inputPlaceholderColor"
+                                        value={state.inputPlaceholderColor}
+                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                        onChange={(e) => onChange('inputPlaceholderColor', e.target.value)}
+                                    />
+                                </div>
+                                <Input
+                                    type="text"
+                                    value={state.inputPlaceholderColor}
+                                    onChange={(e) => onChange('inputPlaceholderColor', e.target.value)}
+                                    className="flex-1 font-mono text-xs"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="inputPlaceholder" className="text-xs font-semibold text-muted-foreground">Input Placeholder Text</Label>
+                            <Input
+                                type="text"
+                                id="inputPlaceholder"
+                                value={state.inputPlaceholder}
+                                onChange={(e) => onChange('inputPlaceholder', e.target.value)}
+                                className="bg-background/50 focus:bg-background transition-all"
+                            />
                         </div>
 
                         <div className="grid w-full items-center gap-2">
