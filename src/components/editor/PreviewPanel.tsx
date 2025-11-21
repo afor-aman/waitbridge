@@ -12,10 +12,11 @@ interface EditorState {
     textColor: string;
     logo: string | null;
     font: 'sans' | 'serif' | 'mono';
-    layout: 'center' | 'left' | 'right';
     bgType: 'solid' | 'gradient' | 'image';
     bgGradient: string;
     buttonStyle: 'rounded' | 'pill' | 'sharp';
+    buttonText: string;
+    buttonColor: string;
 }
 
 interface PreviewPanelProps {
@@ -62,10 +63,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
             {/* Content Area */}
             <div
                 className={cn(
-                    "flex-1 w-full flex flex-col justify-center p-8 transition-all duration-500 overflow-y-auto",
-                    state.layout === 'center' && "items-center text-center",
-                    state.layout === 'left' && "items-start text-left",
-                    state.layout === 'right' && "items-end text-right",
+                    "flex-1 w-full flex flex-col justify-center items-center text-center p-8 transition-all duration-500 overflow-y-auto",
                     state.font === 'sans' && "font-sans",
                     state.font === 'serif' && "font-serif",
                     state.font === 'mono' && "font-mono",
@@ -73,17 +71,9 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                 )}
                 style={{ ...bgProps.style, color: state.textColor }}
             >
-                <div className={cn(
-                    "w-full max-w-lg space-y-8 animate-in fade-in zoom-in duration-700 slide-in-from-bottom-4",
-                    state.layout === 'center' ? "mx-auto" : ""
-                )}>
+                <div className="w-full max-w-lg space-y-8 animate-in fade-in zoom-in duration-700 slide-in-from-bottom-4 mx-auto">
                     {state.logo && (
-                        <div className={cn(
-                            "flex mb-8",
-                            state.layout === 'center' && "justify-center",
-                            state.layout === 'left' && "justify-start",
-                            state.layout === 'right' && "justify-end"
-                        )}>
+                        <div className="flex mb-8 justify-center">
                             <img src={state.logo} alt="Logo" className="h-16 w-auto object-contain drop-shadow-sm" />
                         </div>
                     )}
@@ -100,8 +90,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                     <div className="mt-12 h-16">
                         {submitted ? (
                             <div className={cn(
-                                "p-4 bg-green-500/10 text-green-600 font-medium animate-in fade-in zoom-in duration-300 flex items-center gap-2",
-                                state.layout === 'center' && "justify-center",
+                                "p-4 bg-green-500/10 text-green-600 font-medium animate-in fade-in zoom-in duration-300 flex items-center gap-2 justify-center",
                                 state.buttonStyle === 'rounded' && "rounded-md",
                                 state.buttonStyle === 'pill' && "rounded-full",
                                 state.buttonStyle === 'sharp' && "rounded-none",
@@ -118,7 +107,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className={cn(
-                                        "h-12 pl-4 pr-32 bg-white/80 dark:bg-black/20 focus:bg-white dark:focus:bg-black/40 transition-all placeholder:text-zinc-400 backdrop-blur-sm shadow-sm",
+                                        "h-12 pl-4 pr-32 transition-all backdrop-blur-sm shadow-sm",
                                         state.buttonStyle === 'rounded' && "rounded-md",
                                         state.buttonStyle === 'pill' && "rounded-full",
                                         state.buttonStyle === 'sharp' && "rounded-none",
@@ -134,8 +123,9 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                                         state.buttonStyle === 'pill' && "rounded-full",
                                         state.buttonStyle === 'sharp' && "rounded-none",
                                     )}
+                                    style={{ backgroundColor: state.buttonColor }}
                                 >
-                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Join'}
+                                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : state.buttonText}
                                 </Button>
                             </form>
                         )}

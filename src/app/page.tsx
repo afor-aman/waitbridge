@@ -17,6 +17,8 @@ interface EditorState {
   bgType: 'solid' | 'gradient' | 'image';
   bgGradient: string;
   buttonStyle: 'rounded' | 'pill' | 'sharp';
+  buttonText: string;
+  buttonColor: string;
 }
 
 const INITIAL_STATE: EditorState = {
@@ -31,6 +33,8 @@ const INITIAL_STATE: EditorState = {
   bgType: 'solid',
   bgGradient: 'from-blue-500 to-purple-600',
   buttonStyle: 'pill',
+  buttonText: 'Join',
+  buttonColor: '#000000',
 };
 
 export default function Home() {

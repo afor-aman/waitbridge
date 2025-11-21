@@ -2,7 +2,7 @@ import React from 'react';
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Upload, Type, Palette, LayoutTemplate, AlignLeft, AlignCenter, AlignRight, Square, Circle, MousePointerClick } from 'lucide-react';
+import { Upload, Type, Palette, LayoutTemplate, Square, Circle, MousePointerClick } from 'lucide-react';
 
 interface EditorState {
     headerText: string;
@@ -16,6 +16,8 @@ interface EditorState {
     bgType: 'solid' | 'gradient' | 'image';
     bgGradient: string;
     buttonStyle: 'rounded' | 'pill' | 'sharp';
+    buttonText: string;
+    buttonColor: string;
 }
 
 interface ControlsPanelProps {
@@ -78,6 +80,17 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                             />
                         </div>
 
+                         <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="buttonText" className="text-xs font-semibold text-muted-foreground">Button Text</Label>
+                            <Input
+                                type="text"
+                                id="buttonText"
+                                value={state.buttonText}
+                                onChange={(e) => onChange('buttonText', e.target.value)}
+                                className="bg-background/50 focus:bg-background transition-all"
+                            />
+                        </div>
+
                         <div className="grid w-full items-center gap-2">
                             <Label htmlFor="submissionMessage" className="text-xs font-semibold text-muted-foreground">Success Message</Label>
                             <Input
@@ -113,24 +126,6 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                             </div>
                         </div>
 
-                        <div className="grid w-full items-center gap-2">
-                            <Label className="text-xs font-semibold text-muted-foreground">Alignment</Label>
-                            <div className="flex gap-2 bg-muted/50 p-1 rounded-lg">
-                                {[
-                                    { value: 'left', icon: AlignLeft },
-                                    { value: 'center', icon: AlignCenter },
-                                    { value: 'right', icon: AlignRight },
-                                ].map(({ value, icon: Icon }) => (
-                                    <button
-                                        key={value}
-                                        onClick={() => onChange('layout', value)}
-                                        className={`flex-1 flex items-center justify-center py-1.5 rounded-md transition-all ${state.layout === value ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                                    >
-                                        <Icon className="w-4 h-4" />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -209,6 +204,27 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                     type="text"
                                     value={state.textColor}
                                     onChange={(e) => onChange('textColor', e.target.value)}
+                                    className="flex-1 font-mono text-xs"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="buttonColor" className="text-xs font-semibold text-muted-foreground">Button Color</Label>
+                            <div className="flex gap-2 items-center">
+                                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-border shadow-sm">
+                                    <Input
+                                        type="color"
+                                        id="buttonColor"
+                                        value={state.buttonColor}
+                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                        onChange={(e) => onChange('buttonColor', e.target.value)}
+                                    />
+                                </div>
+                                <Input
+                                    type="text"
+                                    value={state.buttonColor}
+                                    onChange={(e) => onChange('buttonColor', e.target.value)}
                                     className="flex-1 font-mono text-xs"
                                 />
                             </div>
