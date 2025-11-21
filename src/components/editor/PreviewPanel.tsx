@@ -75,7 +75,7 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                 )}
                 style={{ ...bgProps.style, color: state.textColor }}
             >
-                <div className="w-full max-w-lg space-y-8 animate-in fade-in zoom-in duration-700 slide-in-from-bottom-4 mx-auto">
+                <div className="w-full max-w-lg space-y-8 mx-auto">
                     {state.logo && (
                         <div className="flex mb-8 justify-center">
                             <img src={state.logo} alt="Logo" className="h-16 w-auto object-contain drop-shadow-sm" />
