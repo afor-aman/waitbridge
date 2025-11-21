@@ -11,7 +11,7 @@ interface EditorState {
     bgColor: string;
     textColor: string;
     logo: string | null;
-    font: 'sans' | 'serif' | 'mono';
+    font: string;
     bgType: 'solid' | 'gradient' | 'image';
     bgGradient: string;
     buttonStyle: 'rounded' | 'pill' | 'sharp';
@@ -52,6 +52,53 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
         return { style: { backgroundColor: state.bgColor } };
     };
 
+    const getFontClass = (font: string) => {
+        const fontMap: Record<string, { class: string; family: string }> = {
+            'inter': { class: 'font-sans', family: 'Inter' },
+            'roboto': { class: 'font-sans', family: 'Roboto' },
+            'poppins': { class: 'font-sans', family: 'Poppins' },
+            'open-sans': { class: 'font-sans', family: 'Open Sans' },
+            'lato': { class: 'font-sans', family: 'Lato' },
+            'montserrat': { class: 'font-sans', family: 'Montserrat' },
+            'playfair': { class: 'font-serif', family: 'Playfair Display' },
+            'merriweather': { class: 'font-serif', family: 'Merriweather' },
+            'lora': { class: 'font-serif', family: 'Lora' },
+            'space-mono': { class: 'font-mono', family: 'Space Mono' },
+            'jetbrains-mono': { class: 'font-mono', family: 'JetBrains Mono' },
+            'fira-code': { class: 'font-mono', family: 'Fira Code' },
+        };
+        return fontMap[font] || { class: 'font-sans', family: 'Inter' };
+    };
+
+    const fontInfo = getFontClass(state.font);
+
+    // Dynamically load Google Fonts
+    React.useEffect(() => {
+        const fontFamily = fontInfo.family.replace(/ /g, '+');
+        const linkId = `google-font-${state.font}`;
+        
+        // Check if font link already exists
+        let link = document.getElementById(linkId) as HTMLLinkElement;
+        
+        if (!link) {
+            link = document.createElement('link');
+            link.id = linkId;
+            link.rel = 'stylesheet';
+            link.href = `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@400;500;600;700&display=swap`;
+            document.head.appendChild(link);
+        }
+
+        // Cleanup function to remove old font links
+        return () => {
+            const allFontLinks = document.querySelectorAll('[id^="google-font-"]');
+            allFontLinks.forEach((oldLink) => {
+                if (oldLink.id !== linkId) {
+                    oldLink.remove();
+                }
+            });
+        };
+    }, [state.font, fontInfo.family]);
+
     const bgProps = getBackgroundStyle();
 
     return (
@@ -68,12 +115,10 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
             <div
                 className={cn(
                     "flex-1 w-full flex flex-col justify-center items-center text-center p-8 transition-all duration-500 overflow-y-auto",
-                    state.font === 'sans' && "font-sans",
-                    state.font === 'serif' && "font-serif",
-                    state.font === 'mono' && "font-mono",
+                    fontInfo.class,
                     bgProps.className
                 )}
-                style={{ ...bgProps.style, color: state.textColor }}
+                style={{ ...bgProps.style, color: state.textColor, fontFamily: `'${fontInfo.family}', ${fontInfo.class.includes('serif') ? 'serif' : fontInfo.class.includes('mono') ? 'monospace' : 'sans-serif'}` }}
             >
                 <div className="w-full max-w-lg space-y-8 mx-auto">
                     {state.logo && (

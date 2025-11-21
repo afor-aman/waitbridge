@@ -2,6 +2,7 @@ import React from 'react';
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Upload, Type, Palette, LayoutTemplate, Square, Circle, MousePointerClick } from 'lucide-react';
 
 interface EditorState {
@@ -11,7 +12,7 @@ interface EditorState {
     bgColor: string;
     textColor: string;
     logo: string | null;
-    font: 'sans' | 'serif' | 'mono';
+    font: string;
     layout: 'center' | 'left' | 'right';
     bgType: 'solid' | 'gradient' | 'image';
     bgGradient: string;
@@ -29,12 +30,28 @@ interface ControlsPanelProps {
     onChange: (key: keyof EditorState, value: any) => void;
 }
 
+const FONT_FAMILIES = [
+    { value: 'inter', label: 'Inter', class: 'font-sans' },
+    { value: 'roboto', label: 'Roboto', class: 'font-sans' },
+    { value: 'poppins', label: 'Poppins', class: 'font-sans' },
+    { value: 'open-sans', label: 'Open Sans', class: 'font-sans' },
+    { value: 'lato', label: 'Lato', class: 'font-sans' },
+    { value: 'montserrat', label: 'Montserrat', class: 'font-sans' },
+    { value: 'playfair', label: 'Playfair Display', class: 'font-serif' },
+    { value: 'merriweather', label: 'Merriweather', class: 'font-serif' },
+    { value: 'lora', label: 'Lora', class: 'font-serif' },
+    { value: 'space-mono', label: 'Space Mono', class: 'font-mono' },
+    { value: 'jetbrains-mono', label: 'JetBrains Mono', class: 'font-mono' },
+    { value: 'fira-code', label: 'Fira Code', class: 'font-mono' },
+];
+
 const GRADIENTS = [
     { name: 'Sunset', value: 'from-orange-500 to-pink-600' },
     { name: 'Ocean', value: 'from-blue-400 to-emerald-400' },
     { name: 'Midnight', value: 'from-slate-900 to-slate-700' },
     { name: 'Purple Haze', value: 'from-purple-500 to-indigo-500' },
 ];
+
 
 export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +97,7 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                 id="subText"
                                 value={state.subText}
                                 onChange={(e) => onChange('subText', e.target.value)}
-                                className="bg-background/50 focus:bg-background transition-all min-h-[100px]"
+                                className="bg-background/50 focus:bg-background transition-all min-h-[150px] resize-none"
                             />
                         </div>
 
@@ -91,6 +108,17 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                 id="buttonText"
                                 value={state.buttonText}
                                 onChange={(e) => onChange('buttonText', e.target.value)}
+                                className="bg-background/50 focus:bg-background transition-all"
+                            />
+                        </div>
+
+                         <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="inputPlaceholder" className="text-xs font-semibold text-muted-foreground">Input Placeholder Text</Label>
+                            <Input
+                                type="text"
+                                id="inputPlaceholder"
+                                value={state.inputPlaceholder}
+                                onChange={(e) => onChange('inputPlaceholder', e.target.value)}
                                 className="bg-background/50 focus:bg-background transition-all"
                             />
                         </div>
@@ -117,17 +145,18 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                     <div className="grid gap-4 pl-2 border-l-2 border-border/50">
                         <div className="grid w-full items-center gap-2">
                             <Label className="text-xs font-semibold text-muted-foreground">Font Family</Label>
-                            <div className="flex gap-2">
-                                {['sans', 'serif', 'mono'].map((font) => (
-                                    <button
-                                        key={font}
-                                        onClick={() => onChange('font', font)}
-                                        className={`flex-1 px-3 py-2 text-xs border rounded-md transition-all ${state.font === font ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted'}`}
-                                    >
-                                        {font.charAt(0).toUpperCase() + font.slice(1)}
-                                    </button>
-                                ))}
-                            </div>
+                            <Select value={state.font} onValueChange={(value) => onChange('font', value)}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a font" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {FONT_FAMILIES.map((font) => (
+                                        <SelectItem key={font.value} value={font.value}>
+                                            <span className={font.class}>{font.label}</span>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                     </div>
@@ -297,16 +326,6 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                             </div>
                         </div>
 
-                        <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="inputPlaceholder" className="text-xs font-semibold text-muted-foreground">Input Placeholder Text</Label>
-                            <Input
-                                type="text"
-                                id="inputPlaceholder"
-                                value={state.inputPlaceholder}
-                                onChange={(e) => onChange('inputPlaceholder', e.target.value)}
-                                className="bg-background/50 focus:bg-background transition-all"
-                            />
-                        </div>
 
                         <div className="grid w-full items-center gap-2">
                             <Label className="text-xs font-semibold text-muted-foreground">Button Style</Label>
@@ -325,48 +344,6 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                                         <Icon className="w-4 h-4" />
                                     </button>
                                 ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Assets Section */}
-                <div className="space-y-4">
-                    <div className="flex items-center gap-2 text-sm font-medium text-primary/80 uppercase tracking-wider">
-                        <Upload className="w-4 h-4" />
-                        <span>Assets</span>
-                    </div>
-                    <div className="grid gap-4 pl-2 border-l-2 border-border/50">
-                        <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="logo" className="text-xs font-semibold text-muted-foreground">Logo</Label>
-                            <div className="flex items-center gap-4">
-                                <div className="relative flex-1">
-                                    <Input
-                                        id="logo"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleLogoUpload}
-                                        className="hidden"
-                                    />
-                                    <Label htmlFor="logo" className="flex items-center justify-center w-full h-24 border-2 border-dashed border-muted-foreground/25 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                                        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                            <Upload className="w-5 h-5" />
-                                            <span className="text-xs">Upload Logo</span>
-                                        </div>
-                                    </Label>
-                                </div>
-                                {state.logo && (
-                                    <div className="w-24 h-24 rounded-lg border border-border bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center p-2 relative group">
-                                        <img src={state.logo} alt="Logo preview" className="max-w-full max-h-full object-contain" />
-                                        <button
-                                            onClick={() => onChange('logo', null)}
-                                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                            <span className="sr-only">Remove</span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-                                        </button>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>

@@ -12,7 +12,7 @@ interface EditorState {
   bgColor: string;
   textColor: string;
   logo: string | null;
-  font: 'sans' | 'serif' | 'mono';
+  font: string;
   layout: 'center' | 'left' | 'right';
   bgType: 'solid' | 'gradient' | 'image';
   bgGradient: string;
@@ -32,7 +32,7 @@ const INITIAL_STATE: EditorState = {
   bgColor: '#ffffff',
   textColor: '#000000',
   logo: null,
-  font: 'sans',
+  font: 'inter',
   layout: 'center',
   bgType: 'solid',
   bgGradient: 'from-blue-500 to-purple-600',
