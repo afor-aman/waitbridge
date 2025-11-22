@@ -1,33 +1,15 @@
+'use client'
+
 import React from 'react';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-interface EditorState {
-    headerText: string;
-    subText: string;
-    submissionMessage: string;
-    bgColor: string;
-    textColor: string;
-    logo: string | null;
-    font: string;
-    bgType: 'solid' | 'gradient' | 'image';
-    bgGradient: string;
-    buttonStyle: 'rounded' | 'pill' | 'sharp';
-    buttonText: string;
-    buttonColor: string;
-    buttonTextColor: string;
-    inputColor: string;
-    inputPlaceholderColor: string;
-    inputPlaceholder: string;
-}
+import { useEditorStore } from '@/store/editorStore';
 
-interface PreviewPanelProps {
-    state: EditorState;
-}
-
-export function PreviewPanel({ state }: PreviewPanelProps) {
+export function PreviewPanel() {
+    const state = useEditorStore((state) => state);
     const [email, setEmail] = React.useState('');
     const [submitted, setSubmitted] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
@@ -134,10 +116,10 @@ export function PreviewPanel({ state }: PreviewPanelProps) {
                     )}
 
                     <div className="space-y-4">
-                        <h1 className="text-5xl  font-bold tracking-tight sm:text-6xl transition-colors duration-300" style={{ color: state.textColor }}>
+                        <h1 className="text-5xl font-bold tracking-tight sm:text-6xl transition-colors duration-300 wrap-break-word" style={{ color: state.textColor }}>
                             {state.headerText}
                         </h1>
-                        <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300" style={{ color: state.textColor }}>
+                        <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300 wrap-break-word" style={{ color: state.textColor }}>
                             {state.subText}
                         </p>
                     </div>

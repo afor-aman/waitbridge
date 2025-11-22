@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
     Sidebar,
@@ -17,9 +17,14 @@ import LogOutButton from './logout';
 import Link from 'next/link';
 import { useSession } from '@/lib/auth-client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { usePathname } from 'next/navigation';
+import { SidebarControls } from '../editor/sidebar-controls';
+import { Home } from 'lucide-react';
 
 export function AppSidebar() {
     const { data: session } = useSession();
+    const pathname = usePathname();
+    const isEditing = pathname?.endsWith('/edit');
 
     return (
         <Sidebar>
@@ -37,19 +42,23 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {/* Placeholder for future menu items */}
-                            <SidebarMenuItem>
-                                <SidebarMenuButton>
-                                    <Link href="/dashboard">Dashboard</Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
+                {isEditing ? (
+                    <SidebarControls />
+                ) : (
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {/* Placeholder for future menu items */}
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton>
+                                       <Home className="w-4 h-4" /> <Link href="/dashboard">Home</Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                )}
             </SidebarContent>
 
             <SidebarFooter>
