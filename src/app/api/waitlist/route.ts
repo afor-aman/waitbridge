@@ -28,6 +28,16 @@ export async function POST(request: Request) {
       return new Response('Unauthorized', { status: 401 });
     }
 
+    // Check if user already has a waitlist (free tier limitation)
+    const existingWaitlists = await db
+      .select()
+      .from(schema.waitlist)
+      .where(eq(schema.waitlist.userId, user.id));
+    
+    if (existingWaitlists.length > 0) {
+      return new Response('You can only create one waitlist on the free plan. Please delete your existing waitlist to create a new one.', { status: 403 });
+    }
+
     const { name, description } = await request.json();
     if (!name) {
       return new Response('Name is required', { status: 400 });

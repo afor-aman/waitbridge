@@ -5,6 +5,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Trash2, Eye, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -72,6 +73,8 @@ export default function Dashboard() {
     }
   };
 
+  const hasWaitlist = waitlists.length > 0;
+
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to delete "${name}"?`)) {
       return;
@@ -100,14 +103,35 @@ export default function Dashboard() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Welcome to Dashboard!</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>Create Waitlist</Button>
-          </DialogTrigger>
+        <Dialog open={open} onOpenChange={(newOpen) => {
+          // Prevent opening dialog if user already has a waitlist
+          if (newOpen && hasWaitlist) return;
+          setOpen(newOpen);
+        }}>
+          {hasWaitlist ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button disabled={hasWaitlist}>
+                  Create Waitlist
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Free plan limit: You can only have one waitlist. Delete your existing waitlist to create a new one.</p>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <DialogTrigger asChild>
+              <Button>Create Waitlist</Button>
+            </DialogTrigger>
+          )}
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Waitlist</DialogTitle>
-              <DialogDescription>Enter a name and optional description.</DialogDescription>
+              <DialogDescription>
+                {hasWaitlist 
+                  ? "You've reached the free plan limit of one waitlist. Delete your existing waitlist to create a new one."
+                  : "Enter a name and optional description."}
+              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -129,7 +153,7 @@ export default function Dashboard() {
                 <DialogClose asChild>
                   <Button variant="outline" disabled={createLoading}>Cancel</Button>
                 </DialogClose>
-                <Button type="submit" disabled={createLoading}>
+                <Button type="submit" disabled={createLoading || hasWaitlist}>
                   {createLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
