@@ -5,7 +5,7 @@ import { PreviewPanel } from '@/components/editor/PreviewPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Save, Loader2, Copy, Check } from 'lucide-react';
+import { Save, Loader2, Copy, Check, Monitor, Smartphone } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEditorStore } from '@/store/editorStore';
 import { toast } from 'sonner';
@@ -19,6 +19,7 @@ export default function Edit() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const { setFullState, getState } = useEditorStore();
   
   const shareableLink = typeof window !== 'undefined' 
@@ -89,22 +90,41 @@ export default function Edit() {
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="share">Share</TabsTrigger>
           </TabsList>
-          <TabsContent value="edit" className="flex justify-end">
-
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Save
-              </>
-            )}
-          </Button>
-            </TabsContent>
+          <TabsContent value="edit" className="flex justify-end items-center gap-2">
+            <div className="flex items-center gap-1 border rounded-md p-1">
+              <Button
+                type="button"
+                variant={previewMode === 'desktop' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setPreviewMode('desktop')}
+                className="h-8 px-3"
+              >
+                <Monitor className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant={previewMode === 'mobile' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setPreviewMode('mobile')}
+                className="h-8 px-3"
+              >
+                <Smartphone className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save
+                </>
+              )}
+            </Button>
+          </TabsContent>
         </div>
         
         <TabsContent value="edit" className="flex-1 mt-0 h-full overflow-hidden flex flex-col">
@@ -113,8 +133,8 @@ export default function Edit() {
             "flex-1 flex items-center justify-center transition-all duration-300",
           )}>
             <div className={cn(
-              "transition-all duration-300",
-              "w-full h-full"
+              "transition-all duration-300 h-full flex items-center justify-center",
+              previewMode === 'desktop' ? "w-full" : "w-full max-w-[375px]"
             )}>
               <PreviewPanel />
             </div>

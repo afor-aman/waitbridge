@@ -280,6 +280,12 @@ export default function PublicWaitlistPage() {
                 </Button>
               </form>
             )}
+            <div className="mt-4 flex justify-center">
+              <a href="#" className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black dark:bg-white text-[10px] font-medium text-white dark:invert font-sans">
+                <span>Built using</span>
+                <span className="font-bold">waitlist</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

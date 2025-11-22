@@ -5,7 +5,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Trash2, Eye } from "lucide-react";
+import { Trash2, Eye, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type Waitlist = {
@@ -24,6 +24,7 @@ export default function Dashboard() {
   const [waitlists, setWaitlists] = useState<Waitlist[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [createLoading, setCreateLoading] = useState(false);
 
   const fetchWaitlists = async () => {
     try {
@@ -45,21 +46,29 @@ export default function Dashboard() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch("/api/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, description }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      alert(`Waitlist created with id ${data.id}`);
-      setName("");
-      setDescription("");
-      setOpen(false);
-      fetchWaitlists(); // Refresh the list
-    } else {
-      const err = await res.text();
-      alert(`Error: ${err}`);
+    setCreateLoading(true);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(`Waitlist created with id ${data.id}`);
+        setName("");
+        setDescription("");
+        setOpen(false);
+        fetchWaitlists(); // Refresh the list
+      } else {
+        const err = await res.text();
+        alert(`Error: ${err}`);
+      }
+    } catch (error) {
+      console.error("Failed to create waitlist:", error);
+      alert("Failed to create waitlist");
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -118,9 +127,18 @@ export default function Dashboard() {
               </div>
               <div className="flex justify-end space-x-2">
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline" disabled={createLoading}>Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Create</Button>
+                <Button type="submit" disabled={createLoading}>
+                  {createLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create"
+                  )}
+                </Button>
               </div>
             </form>
           </DialogContent>
