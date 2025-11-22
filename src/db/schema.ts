@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, bigint, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, bigint, jsonb, unique } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
     id: text('id').primaryKey(),
@@ -96,7 +96,9 @@ export const waitlistEntry = pgTable('waitlist_entry', {
         .references(() => waitlist.id, { onDelete: 'cascade' }),
     email: text('email').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+}, (table) => ({
+    uniqueWaitlistEmail: unique().on(table.waitlistId, table.email),
+}));
 
 export const schema = {
     user,

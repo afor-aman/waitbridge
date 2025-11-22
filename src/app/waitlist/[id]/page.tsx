@@ -79,18 +79,23 @@ export default function PublicWaitlistPage() {
 
       const data = await res.json();
 
-      if (res.ok) {
+      // Handle duplicate email (409 Conflict)
+      if (res.status === 409 || data.alreadyExists) {
+        toast.warning(data.message || 'This email is already on the waitlist!');
+        setEmail('');
+        return;
+      }
+
+      // Handle successful submission
+      if (res.ok && data.success) {
         setSubmitted(true);
-        if (data.alreadyExists) {
-          toast.info('You are already on the waitlist!');
-        } else {
-          toast.success('Successfully joined the waitlist!');
-        }
+        toast.success(data.message || 'Successfully joined the waitlist!');
         setEmail('');
         setTimeout(() => {
           setSubmitted(false);
         }, 5000);
       } else {
+        // Handle other errors
         toast.error(data.message || 'Failed to join waitlist');
       }
     } catch (error) {

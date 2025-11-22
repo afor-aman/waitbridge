@@ -37,27 +37,39 @@ export async function POST(
     
     if (existingEntry) {
       return Response.json({ 
-        success: true, 
-        message: 'You are already on the waitlist!',
+        success: false, 
+        message: 'This email is already on the waitlist!',
         alreadyExists: true 
-      });
+      }, { status: 409 });
     }
     
     // Create new entry
-    const [newEntry] = await db
-      .insert(schema.waitlistEntry)
-      .values({
-        id: crypto.randomUUID(),
-        waitlistId: id,
-        email: email.toLowerCase(),
-      })
-      .returning();
-    
-    return Response.json({ 
-      success: true, 
-      message: 'Successfully joined the waitlist!',
-      entry: newEntry 
-    });
+    try {
+      const [newEntry] = await db
+        .insert(schema.waitlistEntry)
+        .values({
+          id: crypto.randomUUID(),
+          waitlistId: id,
+          email: email.toLowerCase(),
+        })
+        .returning();
+      
+      return Response.json({ 
+        success: true, 
+        message: 'Successfully joined the waitlist!',
+        entry: newEntry 
+      });
+    } catch (insertError: any) {
+      // Handle unique constraint violation (duplicate email)
+      if (insertError?.code === '23505' || insertError?.message?.includes('unique') || insertError?.message?.includes('duplicate')) {
+        return Response.json({ 
+          success: false, 
+          message: 'This email is already on the waitlist!',
+          alreadyExists: true 
+        }, { status: 409 });
+      }
+      throw insertError; // Re-throw if it's a different error
+    }
   } catch (error) {
     console.error(error);
     return new Response('Internal Server Error', { status: 500 });
