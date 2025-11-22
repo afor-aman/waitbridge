@@ -6,6 +6,7 @@ export interface EditorState {
   submissionMessage: string;
   bgColor: string;
   textColor: string;
+  subTextColor: string;
   logo: string | null;
   font: string;
   layout: 'center' | 'left' | 'right';
@@ -32,6 +33,7 @@ export const INITIAL_STATE: EditorState = {
   submissionMessage: "You're on the list! We'll be in touch soon.",
   bgColor: '#ffffff',
   textColor: '#000000',
+  subTextColor: '#000000',
   logo: null,
   font: 'inter',
   layout: 'center',

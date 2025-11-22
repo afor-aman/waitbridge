@@ -11,8 +11,8 @@ export const auth = betterAuth({
     rateLimit: {
         enabled: true,
         //Work for all routes except for the ones mentioned below in customRules
-        window: 200, // time window in seconds
-        max: 1, // max requests in the window
+        // window: 200, // time window in seconds
+        // max: 1, // max requests in the window
         storage: 'database',
         modelName: 'rateLimit', //optional by default "rateLimit" is used
         customRules: {
@@ -27,7 +27,7 @@ export const auth = betterAuth({
             '/sign-up/email': {
                 //Work for the sign-up/email route only
                 window: 100,
-                max: 1,
+                max: 10,
             },
         },
     },

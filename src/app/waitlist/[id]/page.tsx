@@ -36,6 +36,7 @@ export default function PublicWaitlistPage() {
               submissionMessage: "You're on the list! We'll be in touch soon.",
               bgColor: '#ffffff',
               textColor: '#000000',
+              subTextColor: '#000000',
               logo: null,
               font: 'inter',
               layout: 'center',
@@ -81,26 +82,34 @@ export default function PublicWaitlistPage() {
 
       // Handle duplicate email (409 Conflict)
       if (res.status === 409 || data.alreadyExists) {
-        toast.warning(data.message || 'This email is already on the waitlist!');
-        setEmail('');
+        toast.warning('Email already exists', {
+          description: data.message || 'This email is already on the waitlist. Please use a different email address.',
+        });
+        // Don't clear email, let user see what they entered
         return;
       }
 
       // Handle successful submission
       if (res.ok && data.success) {
         setSubmitted(true);
-        toast.success(data.message || 'Successfully joined the waitlist!');
+        toast.success('Successfully joined!', {
+          description: data.message || 'We\'ll notify you when we launch.',
+        });
         setEmail('');
         setTimeout(() => {
           setSubmitted(false);
         }, 5000);
       } else {
         // Handle other errors
-        toast.error(data.message || 'Failed to join waitlist');
+        toast.error('Failed to join', {
+          description: data.message || 'Please try again later or contact support if the problem persists.',
+        });
       }
     } catch (error) {
       console.error('Failed to join waitlist:', error);
-      toast.error('Failed to join waitlist. Please try again.');
+      toast.error('Connection error', {
+        description: 'Please check your connection and try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -212,12 +221,12 @@ export default function PublicWaitlistPage() {
             <h1 className="text-5xl font-bold tracking-tight sm:text-6xl transition-colors duration-300 wrap-break-word" style={{ color: settings.textColor }}>
               {settings.headerText}
             </h1>
-            <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300 wrap-break-word" style={{ color: settings.textColor }}>
+            <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300 wrap-break-word" style={{ color: settings.subTextColor || settings.textColor }}>
               {settings.subText}
             </p>
           </div>
 
-          <div className="mt-12 h-16">
+          <div className="mt-12">
             {submitted ? (
               <div className={cn(
                 "p-4 bg-green-500/10 text-green-600 font-medium animate-in fade-in zoom-in duration-300 flex items-center gap-2 justify-center",

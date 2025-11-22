@@ -119,7 +119,7 @@ export function PreviewPanel() {
                         <h1 className="text-5xl font-bold tracking-tight sm:text-6xl transition-colors duration-300 wrap-break-word" style={{ color: state.textColor }}>
                             {state.headerText}
                         </h1>
-                        <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300 wrap-break-word" style={{ color: state.textColor }}>
+                        <p className="text-xl opacity-80 leading-relaxed max-w-lg transition-colors duration-300 wrap-break-word" style={{ color: state.subTextColor || state.textColor }}>
                             {state.subText}
                         </p>
                     </div>

@@ -1,7 +1,36 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/partials/app-sidebar';
+import { useSession } from '@/lib/auth-client';
+import { Loader2 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+    const { data: session, isPending } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isPending && !session) {
+            router.push('/signup');
+        }
+    }, [session, isPending, router]);
+
+    // Show loading state while checking session
+    if (isPending) {
+        return (
+            <div className="h-screen w-full flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin" />
+            </div>
+        );
+    }
+
+    // Don't render dashboard if not authenticated (redirect will happen)
+    if (!session) {
+        return null;
+    }
+
     return (
         <SidebarProvider>
             <AppSidebar />

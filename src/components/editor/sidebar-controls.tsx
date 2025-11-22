@@ -370,7 +370,7 @@ export function SidebarControls() {
                                         )}
 
                                         <div className="grid w-full items-center gap-2">
-                                            <Label htmlFor="textColor" className="text-xs">Text Color</Label>
+                                            <Label htmlFor="textColor" className="text-xs">Header Text Color</Label>
                                             <div className="flex gap-2 items-center">
                                                 <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shadow-sm">
                                                     <Input
@@ -385,6 +385,27 @@ export function SidebarControls() {
                                                     type="text"
                                                     value={state.textColor}
                                                     onChange={(e) => handleChange('textColor', e.target.value)}
+                                                    className="flex-1 h-8 font-mono text-xs"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid w-full items-center gap-2">
+                                            <Label htmlFor="subTextColor" className="text-xs">Subtext Color</Label>
+                                            <div className="flex gap-2 items-center">
+                                                <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shadow-sm">
+                                                    <Input
+                                                        type="color"
+                                                        id="subTextColor"
+                                                        value={state.subTextColor}
+                                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                        onChange={(e) => handleChange('subTextColor', e.target.value)}
+                                                    />
+                                                </div>
+                                                <Input
+                                                    type="text"
+                                                    value={state.subTextColor}
+                                                    onChange={(e) => handleChange('subTextColor', e.target.value)}
                                                     className="flex-1 h-8 font-mono text-xs"
                                                 />
                                             </div>
