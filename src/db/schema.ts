@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, integer, bigint } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, integer, bigint, jsonb } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
     id: text('id').primaryKey(),
@@ -74,11 +74,37 @@ export const rateLimit = pgTable('rate_limit', {
     lastRequest: bigint('last_request', { mode: 'number' }),
 });
 
+export const waitlist = pgTable('waitlist', {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    description: text('description'),
+    settings: jsonb('settings'),
+    userId: text('user_id')
+        .notNull()
+        .references(() => user.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+        .defaultNow()
+        .$onUpdate(() => new Date())
+        .notNull(),
+});
+
+export const waitlistEntry = pgTable('waitlist_entry', {
+    id: text('id').primaryKey(),
+    waitlistId: text('waitlist_id')
+        .notNull()
+        .references(() => waitlist.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const schema = {
     user,
     session,
     account,
     verification,
     jwks,
-    rateLimit
+    rateLimit,
+    waitlist,
+    waitlistEntry,
 };
