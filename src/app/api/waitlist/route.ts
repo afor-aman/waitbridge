@@ -28,14 +28,27 @@ export async function POST(request: Request) {
       return new Response('Unauthorized', { status: 401 });
     }
 
-    // Check if user already has a waitlist (free tier limitation)
-    const existingWaitlists = await db
+    // Get full user record to check payment status
+    const [fullUser] = await db
       .select()
-      .from(schema.waitlist)
-      .where(eq(schema.waitlist.userId, user.id));
-    
-    if (existingWaitlists.length > 0) {
-      return new Response('You can only create one waitlist on the free plan. Please delete your existing waitlist to create a new one.', { status: 403 });
+      .from(schema.user)
+      .where(eq(schema.user.id, user.id));
+
+    if (!fullUser) {
+      return new Response('User not found', { status: 404 });
+    }
+
+    // Check if user already has a waitlist (free tier limitation)
+    // Paid users can create unlimited waitlists
+    if (!fullUser.payment) {
+      const existingWaitlists = await db
+        .select()
+        .from(schema.waitlist)
+        .where(eq(schema.waitlist.userId, user.id));
+      
+      if (existingWaitlists.length > 0) {
+        return new Response('You can only create one waitlist on the free plan. Please upgrade to create unlimited waitlists.', { status: 403 });
+      }
     }
 
     const { name, description } = await request.json();

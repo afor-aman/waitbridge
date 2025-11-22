@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Trash2, Eye, Loader2 } from "lucide-react";
+import { Trash2, Eye, Loader2, Crown } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 type Waitlist = {
   id: string;
@@ -26,6 +27,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [createLoading, setCreateLoading] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(true);
 
   const fetchWaitlists = async () => {
     try {
@@ -41,8 +44,23 @@ export default function Dashboard() {
     }
   };
 
+  const fetchPaymentStatus = async () => {
+    try {
+      const res = await fetch("/api/user/payment-status");
+      if (res.ok) {
+        const data = await res.json();
+        setIsPaid(data.payment || false);
+      }
+    } catch (error) {
+      console.error("Failed to fetch payment status:", error);
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchWaitlists();
+    fetchPaymentStatus();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,7 +91,9 @@ export default function Dashboard() {
     }
   };
 
+  // Free users can only have 1 waitlist, paid users can have unlimited
   const hasWaitlist = waitlists.length > 0;
+  const isLimited = !isPaid && hasWaitlist;
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to delete "${name}"?`)) {
@@ -87,6 +107,7 @@ export default function Dashboard() {
       });
       if (res.ok) {
         fetchWaitlists(); // Refresh the list
+        fetchPaymentStatus(); // Refresh payment status in case it changed
       } else {
         const err = await res.text();
         alert(`Error: ${err}`);
@@ -102,21 +123,29 @@ export default function Dashboard() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Welcome to Dashboard!</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold">Welcome to Dashboard!</h1>
+          {!paymentLoading && isPaid && (
+            <Badge variant="default" className="gap-1">
+              <Crown className="w-3 h-3" />
+              Pro
+            </Badge>
+          )}
+        </div>
         <Dialog open={open} onOpenChange={(newOpen) => {
-          // Prevent opening dialog if user already has a waitlist
-          if (newOpen && hasWaitlist) return;
+          // Prevent opening dialog if free user already has a waitlist
+          if (newOpen && isLimited) return;
           setOpen(newOpen);
         }}>
-          {hasWaitlist ? (
+          {isLimited ? (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button disabled={hasWaitlist}>
+                <Button disabled={isLimited}>
                   Create Waitlist
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Free plan limit: You can only have one waitlist. Delete your existing waitlist to create a new one.</p>
+                <p>Free plan limit: You can only have one waitlist. Upgrade to create unlimited waitlists.</p>
               </TooltipContent>
             </Tooltip>
           ) : (
@@ -128,8 +157,8 @@ export default function Dashboard() {
             <DialogHeader>
               <DialogTitle>Create New Waitlist</DialogTitle>
               <DialogDescription>
-                {hasWaitlist 
-                  ? "You've reached the free plan limit of one waitlist. Delete your existing waitlist to create a new one."
+                {isLimited 
+                  ? "You've reached the free plan limit of one waitlist. Upgrade to create unlimited waitlists."
                   : "Enter a name and optional description."}
               </DialogDescription>
             </DialogHeader>
@@ -153,7 +182,7 @@ export default function Dashboard() {
                 <DialogClose asChild>
                   <Button variant="outline" disabled={createLoading}>Cancel</Button>
                 </DialogClose>
-                <Button type="submit" disabled={createLoading || hasWaitlist}>
+                <Button type="submit" disabled={createLoading || isLimited}>
                   {createLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -174,7 +203,14 @@ export default function Dashboard() {
         {loading ? (
           <p className="text-muted-foreground">Loading waitlists...</p>
         ) : waitlists.length === 0 ? (
-          <p className="text-muted-foreground">No waitlists yet. Create one to get started!</p>
+          <div className="space-y-2">
+            <p className="text-muted-foreground">No waitlists yet. Create one to get started!</p>
+            {!isPaid && (
+              <p className="text-sm text-muted-foreground">
+                Free plan: You can create one waitlist. <a href="#" className="text-primary underline">Upgrade</a> to create unlimited waitlists.
+              </p>
+            )}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {waitlists.map((waitlist) => (
