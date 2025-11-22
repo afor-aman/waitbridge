@@ -247,6 +247,7 @@ export default function PublicWaitlistPage() {
                 }} />
                 <Input
                   type="email"
+                  id='email-input'
                   placeholder={settings.inputPlaceholder}
                   required
                   value={email}
@@ -264,6 +265,7 @@ export default function PublicWaitlistPage() {
                 />
                 <Button
                   type="submit"
+                  id='join-button'
                   disabled={loading}
                   className={cn(
                     "absolute right-1.5 top-1.5 bottom-1.5 px-6 transition-all hover:scale-105 active:scale-95",
