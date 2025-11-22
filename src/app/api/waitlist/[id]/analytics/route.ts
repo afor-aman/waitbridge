@@ -1,12 +1,7 @@
 import { db } from '@/db/drizzle';
 import { schema } from '@/db/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
-import { auth } from '@/lib/auth';
-
-async function getCurrentUser(request: Request) {
-  const session = await auth.api.getSession({ headers: request.headers });
-  return session?.user;
-}
+import { getCurrentUser } from '@/utils/getCurrentUser';
 
 export async function GET(
   request: Request,

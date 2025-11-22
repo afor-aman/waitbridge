@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/partials/app-sidebar';
-import { useSession } from '@/lib/auth-client';
+import { SessionProvider, useSessionContext } from '@/contexts/SessionContext';
 import { Loader2 } from 'lucide-react';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { data: session, isPending } = useSession();
+function DashboardContent({ children }: { children: React.ReactNode }) {
+    const { session, isPending } = useSessionContext();
     const router = useRouter();
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <SidebarProvider>
-            <AppSidebar />
+            <AppSidebar session={session} />
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1" />
@@ -44,5 +44,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
             </SidebarInset>
         </SidebarProvider>
+    );
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <SessionProvider>
+            <DashboardContent>{children}</DashboardContent>
+        </SessionProvider>
     );
 }

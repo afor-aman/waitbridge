@@ -1,5 +1,4 @@
 // TODO: Check api hits and optimize it
-// TODO: Fix the rate limit for the api auth
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";

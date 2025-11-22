@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { signIn } from '@/utils/authHelperClient';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'form'>) {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -47,8 +49,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'form'>)
                         </span>
                     ),
                 });
-                // router.push("/dashboard");
-                // Handle successful login - you can add redirect logic here
+                // Redirect to dashboard after successful login
+                router.push("/dashboard");
             }
         } catch (err) {
             const errorMessage = 'Login failed. Please check your credentials.';

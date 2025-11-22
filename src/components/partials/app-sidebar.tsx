@@ -15,14 +15,25 @@ import {
 
 import LogOutButton from './logout';
 import Link from 'next/link';
-import { useSession } from '@/lib/auth-client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { usePathname } from 'next/navigation';
 import { SidebarControls } from '../editor/sidebar-controls';
 import { Home } from 'lucide-react';
 
-export function AppSidebar() {
-    const { data: session } = useSession();
+type Session = {
+    user: {
+        id: string;
+        name: string | null;
+        email: string;
+        image: string | null;
+    } | null;
+} | null;
+
+interface AppSidebarProps {
+    session: Session;
+}
+
+export function AppSidebar({ session }: AppSidebarProps) {
     const pathname = usePathname();
     const isEditing = pathname?.endsWith('/edit');
 

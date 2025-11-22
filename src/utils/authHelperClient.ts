@@ -2,17 +2,14 @@ import { authClient } from '@/lib/auth-client'; //import the auth client
 
 export const signUp = async (email: string, password: string, name: string, image: string) => {
     try {
-        console.log(email, password, name, image);
         const { data, error } = await authClient.signUp.email({
             email,
             password,
             name,
             callbackURL: '/login',
         });
-        console.log(data, error);
         return { data, error };
     } catch (error) {
-        console.log(error);
         //eslint-disable-next-line @typescript-eslint/no-explicit-any
         return { data: null, error: error as any };
     }

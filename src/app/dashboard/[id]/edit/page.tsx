@@ -120,6 +120,7 @@ export default function Edit() {
     if (id) {
       loadSubmissions();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, submissionsPage, submissionsSearch]);
 
   const handleSearch = () => {

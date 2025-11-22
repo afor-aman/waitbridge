@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { signUp } from '@/utils/authHelperClient';
 
 export function SignupForm({ className, ...props }: React.ComponentProps<'form'>) {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
@@ -66,11 +68,14 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'form'>
                     id: loadingToastId,
                     description: (
                         <span className="text-green-500">
-                            Your account has been created. You can now sign in.
+                            Your account has been created. Redirecting to login...
                         </span>
                     ),
                 });
-                // router.push("/login");
+                // Redirect to login page after successful signup
+                setTimeout(() => {
+                    router.push("/login");
+                }, 1500);
             }
         } catch (err) {
             const errorMessage = 'Signup failed. Please try again.';
