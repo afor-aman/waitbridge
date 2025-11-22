@@ -155,7 +155,7 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                 </div>
                 {/* Dashboard Link */}
                 <a 
-                    href="#" 
+                    href="/dashboard" 
                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-sm font-medium"
                 >
                     <LayoutDashboard className="w-4 h-4" />
@@ -176,13 +176,13 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                         <div className="space-y-4">
                             <button
                                 onClick={() => toggleSection('content')}
-                                className="flex items-center justify-between w-full text-sm font-medium text-primary/80 uppercase tracking-wider hover:text-primary transition-colors"
+                                className="flex items-center justify-between w-full px-3 py-2.5 text-base font-semibold text-foreground uppercase tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-all duration-200 group"
                             >
-                                <div className="flex items-center gap-2">
-                                    <Type className="w-4 h-4" />
+                                <div className="flex items-center gap-2.5">
+                                    <Type className="w-4 h-4 text-primary group-hover:text-primary/90 transition-colors" />
                                     <span>Content</span>
                                 </div>
-                                <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'content' ? 'rotate-180' : ''}`} />
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openSection === 'content' ? 'rotate-180' : ''} text-muted-foreground group-hover:text-foreground`} />
                             </button>
                             {openSection === 'content' && (
                                 <div className="grid gap-4 pl-2 border-l-2 border-border/50">
@@ -247,13 +247,13 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                 <div className="space-y-4">
                     <button
                         onClick={() => toggleSection('typography')}
-                        className="flex items-center justify-between w-full text-sm font-medium text-primary/80 uppercase tracking-wider hover:text-primary transition-colors"
+                        className="flex items-center justify-between w-full px-3 py-2.5 text-base font-semibold text-foreground uppercase tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-all duration-200 group"
                     >
-                        <div className="flex items-center gap-2">
-                            <LayoutTemplate className="w-4 h-4" />
+                        <div className="flex items-center gap-2.5">
+                            <LayoutTemplate className="w-4 h-4 text-primary group-hover:text-primary/90 transition-colors" />
                             <span>Layout & Type</span>
                         </div>
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'typography' ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openSection === 'typography' ? 'rotate-180' : ''} text-muted-foreground group-hover:text-foreground`} />
                     </button>
                     {openSection === 'typography' && (
                         <div className="grid gap-4 pl-2 border-l-2 border-border/50">
@@ -281,13 +281,13 @@ export function ControlsPanel({ state, onChange }: ControlsPanelProps) {
                 <div className="space-y-4">
                     <button
                         onClick={() => toggleSection('appearance')}
-                        className="flex items-center justify-between w-full text-sm font-medium text-primary/80 uppercase tracking-wider hover:text-primary transition-colors"
+                        className="flex items-center justify-between w-full px-3 py-2.5 text-base font-semibold text-foreground uppercase tracking-wide hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-all duration-200 group"
                     >
-                        <div className="flex items-center gap-2">
-                            <Palette className="w-4 h-4" />
+                        <div className="flex items-center gap-2.5">
+                            <Palette className="w-4 h-4 text-primary group-hover:text-primary/90 transition-colors" />
                             <span>Appearance</span>
                         </div>
-                        <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'appearance' ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openSection === 'appearance' ? 'rotate-180' : ''} text-muted-foreground group-hover:text-foreground`} />
                     </button>
                     {openSection === 'appearance' && (
                         <div className="grid gap-4 pl-2 border-l-2 border-border/50">

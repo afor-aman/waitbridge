@@ -1,3 +1,6 @@
+// TODO: Add analytics
+// TODO: Add Submission
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
