@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Trash2, Eye, Loader2, Crown } from "lucide-react";
+import { Trash2, Eye, Loader2, Crown, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 
@@ -205,9 +205,18 @@ export default function Dashboard() {
         ) : waitlists.length === 0 ? (
           <div className="space-y-2">
             <p className="text-muted-foreground">No waitlists yet. Create one to get started!</p>
-            {!isPaid && (
+            {!paymentLoading && !isPaid && (
               <p className="text-sm text-muted-foreground">
-                Free plan: You can create one waitlist. <a href="#" className="text-primary underline">Upgrade</a> to create unlimited waitlists.
+                Free plan: You can create one waitlist.{" "}
+                <a 
+                  href="https://www.creem.io/payment/prod_oduYK1IJC54WJxQPrWq5P" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary underline hover:text-primary/80"
+                >
+                  Upgrade
+                </a>{" "}
+                to create unlimited waitlists.
               </p>
             )}
           </div>
@@ -256,6 +265,41 @@ export default function Dashboard() {
               </Card>
             ))}
           </div>
+        )}
+        
+        {/* Upgrade CTA for free users who have reached the limit */}
+        {!paymentLoading && !isPaid && hasWaitlist && (
+          <Card className="mt-6 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardHeader>
+              <div className="flex items-start gap-3">
+                <div className="rounded-full bg-primary/10 p-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="text-lg mb-1">Upgrade to Pro</CardTitle>
+                  <CardDescription className="text-base">
+                    You've reached the free plan limit. Upgrade to create unlimited waitlists and unlock all features!
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardFooter className="pt-0">
+              <Button 
+                asChild
+                className="w-full sm:w-auto"
+                size="lg"
+              >
+                <a 
+                  href={process.env.NEXT_PUBLIC_CREEM_CHECKOUT_URL!} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Upgrade Now
+                </a>
+              </Button>
+            </CardFooter>
+          </Card>
         )}
       </div>
     </div>
