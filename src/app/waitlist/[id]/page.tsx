@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from 'lucide-react';
+import { Loader, Loader2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import type { EditorState } from '@/store/editorStore';
@@ -299,7 +299,7 @@ export default function PublicWaitlistPage() {
             <div className="mt-4 flex justify-center">
               <a href="#" className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black dark:bg-white text-[10px] font-medium text-white dark:invert font-sans">
                 <span>Built using</span>
-                <span className="font-bold">waitlist</span>
+                <span className="font-bold flex gap-1"><Loader className="w-4 h-4" /> waitbridge</span>
               </a>
             </div>
           </div>
