@@ -8,6 +8,7 @@ import { nextCookies } from 'better-auth/next-js';
 import { schema } from '@/db/schema';
 
 export const auth = betterAuth({
+    trustedOrigins: ["https://www.waitbridge.com", "https://waitbridge.com", "http://waitbridge.com", "http://www.waitbridge.com"],
     rateLimit: {
         enabled: true,
         //Work for all routes except for the ones mentioned below in customRules
