@@ -20,8 +20,7 @@ const plans = [
   },
   {
     name: "Lifetime Deal",
-    price: "$29",
-    originalPrice: "$59",
+    price: "$39",
     description: "One-time payment, lifetime access",
     features: [
       "Unlimited waitlists",
@@ -68,11 +67,6 @@ export function Pricing() {
               <div className="mt-4">
                 <div className="flex items-baseline justify-center gap-3">
                   <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.originalPrice && (
-                    <span className="text-2xl text-muted-foreground line-through">
-                      {plan.originalPrice}
-                    </span>
-                  )}
                 </div>
               </div>
               <CardDescription className="mt-2 text-base">{plan.description}</CardDescription>
