@@ -297,7 +297,7 @@ export default function PublicWaitlistPage() {
               </form>
             )}
             <div className="mt-4 flex justify-center">
-              <a href="#" className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black dark:bg-white text-[10px] font-medium text-white dark:invert font-sans">
+              <a href="https://waitbridge.com/ref=badge" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black dark:bg-white text-[10px] font-medium text-white dark:invert font-sans">
                 <span>Built using</span>
                 <span className="font-bold flex gap-1"><Loader className="w-4 h-4" /> waitbridge</span>
               </a>

@@ -9,6 +9,9 @@ export function Hero() {
       <div className="grid gap-6 lg:grid-cols-2 lg:gap-8 items-center">
         {/* Left side - Content */}
         <div className="flex flex-col space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 w-fit">
+            <span className="text-sm font-semibold">🔥 Lifetime Deal - $39</span>
+          </div>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-left">
             Building a Waitlist
             <span className="text-primary"> Shouldn't Be Hard</span>
