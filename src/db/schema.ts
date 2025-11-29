@@ -96,6 +96,7 @@ export const waitlistEntry = pgTable('waitlist_entry', {
         .notNull()
         .references(() => waitlist.id, { onDelete: 'cascade' }),
     email: text('email').notNull(),
+    name: text('name'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
     uniqueWaitlistEmail: unique().on(table.waitlistId, table.email),

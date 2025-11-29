@@ -19,12 +19,16 @@ export interface EditorState {
   bgPattern: string;
   bgPatternColor: string;
   bgPatternOpacity: number;
+  bgPatternScale: number;
+  bgPatternStrokeWidth: number;
+  bgPatternRotation: number;
   bgImage: string | null;
   buttonStyle: 'rounded' | 'pill' | 'sharp';
   buttonText: string;
   buttonColor: string;
   buttonTextColor: string;
   inputColor: string;
+  inputTextColor: string;
   inputPlaceholderColor: string;
   inputPlaceholder: string;
 }
@@ -54,12 +58,16 @@ export const INITIAL_STATE: EditorState = {
   bgPattern: 'dots',
   bgPatternColor: '#000000',
   bgPatternOpacity: 0.1,
+  bgPatternScale: 1,
+  bgPatternStrokeWidth: 1,
+  bgPatternRotation: 0,
   bgImage: null,
   buttonStyle: 'pill',
   buttonText: 'Join',
   buttonColor: '#000000',
   buttonTextColor: '#ffffff',
   inputColor: '#ffffff',
+  inputTextColor: '#000000',
   inputPlaceholderColor: '#999999',
   inputPlaceholder: 'Enter your email',
 };

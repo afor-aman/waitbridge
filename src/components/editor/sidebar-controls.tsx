@@ -15,6 +15,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
+import { getPatternStyle } from '@/lib/patterns';
 
 const FONT_FAMILIES = [
     { value: 'inter', label: 'Inter', class: 'font-sans' },
@@ -40,37 +41,6 @@ const GRADIENTS = [
     { name: 'Custom', value: 'custom' },
 ];
 
-const getPatternStyle = (pattern: string, color: string, opacity: number) => {
-    const hexToRgba = (hex: string, op: number) => {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        return `rgba(${r}, ${g}, ${b}, ${op})`;
-    };
-    const patternColor = hexToRgba(color, opacity);
-    const encodedColor = encodeURIComponent(color);
-    
-    const patterns: Record<string, { image: string; size: string; position?: string }> = {
-        dots: { image: `radial-gradient(${patternColor} 1px, transparent 1px)`, size: '20px 20px' },
-        grid: { image: `linear-gradient(${patternColor} 1px, transparent 1px), linear-gradient(90deg, ${patternColor} 1px, transparent 1px)`, size: '20px 20px' },
-        lines: { image: `repeating-linear-gradient(0deg, ${patternColor}, ${patternColor} 1px, transparent 1px, transparent 10px)`, size: '10px 10px' },
-        diagonal: { image: `repeating-linear-gradient(45deg, ${patternColor}, ${patternColor} 1px, transparent 1px, transparent 10px)`, size: '10px 10px' },
-        waves: { image: `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275h6.335zm0-20C13.258 2.892 8.077 4 0 4V2c5.744 0 9.951-.574 14.85-2h6.334zM77.38 0C85.239 2.966 90.502 4 100 4V2c-6.842 0-11.386-.542-16.396-2h-6.225zM0 14c8.44 0 13.718-1.21 22.272-4.402l1.768-.661C33.64 5.347 39.647 4 50 4c10.271 0 15.362 1.222 24.629 4.928C84.112 12.722 89.438 14 100 14v-2c-10.271 0-15.362-1.222-24.629-4.928C65.888 3.278 60.562 2 50 2 39.374 2 33.145 3.397 23.34 7.063l-1.767.662C13.223 10.84 8.163 12 0 12v2z' fill='${encodedColor}' fill-opacity='${opacity}' fill-rule='evenodd'/%3E%3C/svg%3E")`, size: '100px 20px' },
-        circles: { image: `radial-gradient(circle, ${patternColor} 1px, transparent 1px), radial-gradient(circle, ${patternColor} 1px, transparent 1px)`, size: '30px 30px, 30px 30px', position: '0 0, 15px 15px' },
-        hexagons: { image: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0l43.3 25v50L50 100 6.7 75V25z' fill='none' stroke='${encodedColor}' stroke-width='1' stroke-opacity='${opacity}'/%3E%3C/svg%3E")`, size: '50px 50px' },
-        crosses: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M0 38h40v2H0zM0 0h40v2H0zM38 0v40h2V0zM0 0v40h2V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        zigzag: { image: `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10l10-10 10 10 10-10 10 10 10-10 10 10 10-10 10 10 10-10v10H0z' fill='${encodedColor}' fill-opacity='${opacity}'/%3E%3C/svg%3E")`, size: '100px 20px' },
-        diamonds: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M20 0l20 20-20 20L0 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        stars: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M20 0l4.9 15.1L40 20l-15.1 4.9L20 40l-4.9-15.1L0 20l15.1-4.9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        plus: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M18 0h4v18h18v4H22v18h-4V22H0v-4h18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        squares: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M0 0h20v20H0zM20 20h20v20H20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        triangles: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M20 0l20 20H0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        crosshatch: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='${encodedColor}' stroke-opacity='${opacity}' stroke-width='1'%3E%3Cpath d='M0 0l40 40M40 0L0 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-        bricks: { image: `url("data:image/svg+xml,%3Csvg width='100' height='40' viewBox='0 0 100 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${opacity}'%3E%3Cpath d='M0 0h50v20H0zM50 20h50v20H50z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '100px 40px' },
-    };
-    
-    return patterns[pattern] || patterns.dots;
-};
 
 export function SidebarControls() {
     const state = useEditorStore((state) => state);
@@ -484,8 +454,9 @@ export function SidebarControls() {
                                                             { name: 'Triangles', value: 'triangles' },
                                                             { name: 'Crosshatch', value: 'crosshatch' },
                                                             { name: 'Bricks', value: 'bricks' },
+                                                            { name: 'Formal', value: 'formal-invitation' },
                                                         ].map((pattern) => {
-                                                            const patternStyle = getPatternStyle(pattern.value, state.bgPatternColor, state.bgPatternOpacity);
+                                                            const patternStyle = getPatternStyle(pattern.value, state.bgPatternColor, state.bgPatternOpacity, state.bgPatternScale, state.bgPatternStrokeWidth, state.bgPatternRotation);
                                                             return (
                                                                 <button
                                                                     key={pattern.value}
@@ -557,6 +528,45 @@ export function SidebarControls() {
                                                         step="0.05"
                                                         value={state.bgPatternOpacity}
                                                         onChange={(e) => handleChange('bgPatternOpacity', parseFloat(e.target.value))}
+                                                        className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                    />
+                                                </div>
+
+                                                <div className="grid w-full items-center gap-2">
+                                                    <Label className="text-xs">Scale: {state.bgPatternScale}x</Label>
+                                                    <input
+                                                        type="range"
+                                                        min="0.1"
+                                                        max="3"
+                                                        step="0.1"
+                                                        value={state.bgPatternScale}
+                                                        onChange={(e) => handleChange('bgPatternScale', parseFloat(e.target.value))}
+                                                        className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                    />
+                                                </div>
+
+                                                <div className="grid w-full items-center gap-2">
+                                                    <Label className="text-xs">Stroke Width: {state.bgPatternStrokeWidth}px</Label>
+                                                    <input
+                                                        type="range"
+                                                        min="0.1"
+                                                        max="10"
+                                                        step="0.1"
+                                                        value={state.bgPatternStrokeWidth}
+                                                        onChange={(e) => handleChange('bgPatternStrokeWidth', parseFloat(e.target.value))}
+                                                        className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                    />
+                                                </div>
+
+                                                <div className="grid w-full items-center gap-2">
+                                                    <Label className="text-xs">Rotation: {state.bgPatternRotation}°</Label>
+                                                    <input
+                                                        type="range"
+                                                        min="0"
+                                                        max="360"
+                                                        step="1"
+                                                        value={state.bgPatternRotation}
+                                                        onChange={(e) => handleChange('bgPatternRotation', parseInt(e.target.value))}
                                                         className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
                                                     />
                                                 </div>
@@ -700,6 +710,27 @@ export function SidebarControls() {
                                                     type="text"
                                                     value={state.inputColor}
                                                     onChange={(e) => handleChange('inputColor', e.target.value)}
+                                                    className="flex-1 h-8 font-mono text-xs"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid w-full items-center gap-2">
+                                            <Label htmlFor="inputTextColor" className="text-xs">Input Text Color</Label>
+                                            <div className="flex gap-2 items-center">
+                                                <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shadow-sm">
+                                                    <Input
+                                                        type="color"
+                                                        id="inputTextColor"
+                                                        value={state.inputTextColor}
+                                                        className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                        onChange={(e) => handleChange('inputTextColor', e.target.value)}
+                                                    />
+                                                </div>
+                                                <Input
+                                                    type="text"
+                                                    value={state.inputTextColor}
+                                                    onChange={(e) => handleChange('inputTextColor', e.target.value)}
                                                     className="flex-1 h-8 font-mono text-xs"
                                                 />
                                             </div>

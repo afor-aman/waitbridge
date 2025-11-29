@@ -54,6 +54,7 @@ export async function GET(
       .select({
         id: schema.waitlistEntry.id,
         email: schema.waitlistEntry.email,
+        name: schema.waitlistEntry.name,
         createdAt: schema.waitlistEntry.createdAt,
       })
       .from(schema.waitlistEntry)
@@ -66,6 +67,7 @@ export async function GET(
       entries: entries.map((entry) => ({
         id: entry.id,
         email: entry.email,
+        name: entry.name,
         createdAt: entry.createdAt.toISOString(),
       })),
       total,

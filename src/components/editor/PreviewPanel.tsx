@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader, Loader2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { getPatternStyle } from '@/lib/patterns';
 
 import { useEditorStore } from '@/store/editorStore';
 
@@ -38,36 +39,14 @@ export function PreviewPanel() {
             return { className: `bg-gradient-to-br ${state.bgGradient}` };
         }
         if (state.bgType === 'pattern') {
-            // Convert hex color to rgba with opacity
-            const hexToRgba = (hex: string, opacity: number) => {
-                const r = parseInt(hex.slice(1, 3), 16);
-                const g = parseInt(hex.slice(3, 5), 16);
-                const b = parseInt(hex.slice(5, 7), 16);
-                return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-            };
-            const patternColor = hexToRgba(state.bgPatternColor, state.bgPatternOpacity);
-            const encodedColor = encodeURIComponent(state.bgPatternColor);
-            
-            const patterns: Record<string, { image: string; size: string; position?: string }> = {
-                dots: { image: `radial-gradient(${patternColor} 1px, transparent 1px)`, size: '20px 20px' },
-                grid: { image: `linear-gradient(${patternColor} 1px, transparent 1px), linear-gradient(90deg, ${patternColor} 1px, transparent 1px)`, size: '20px 20px' },
-                lines: { image: `repeating-linear-gradient(0deg, ${patternColor}, ${patternColor} 1px, transparent 1px, transparent 10px)`, size: '10px 10px' },
-                diagonal: { image: `repeating-linear-gradient(45deg, ${patternColor}, ${patternColor} 1px, transparent 1px, transparent 10px)`, size: '10px 10px' },
-                waves: { image: `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275h6.335zm0-20C13.258 2.892 8.077 4 0 4V2c5.744 0 9.951-.574 14.85-2h6.334zM77.38 0C85.239 2.966 90.502 4 100 4V2c-6.842 0-11.386-.542-16.396-2h-6.225zM0 14c8.44 0 13.718-1.21 22.272-4.402l1.768-.661C33.64 5.347 39.647 4 50 4c10.271 0 15.362 1.222 24.629 4.928C84.112 12.722 89.438 14 100 14v-2c-10.271 0-15.362-1.222-24.629-4.928C65.888 3.278 60.562 2 50 2 39.374 2 33.145 3.397 23.34 7.063l-1.767.662C13.223 10.84 8.163 12 0 12v2z' fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}' fill-rule='evenodd'/%3E%3C/svg%3E")`, size: '100px 20px' },
-                circles: { image: `radial-gradient(circle, ${patternColor} 1px, transparent 1px), radial-gradient(circle, ${patternColor} 1px, transparent 1px)`, size: '30px 30px, 30px 30px', position: '0 0, 15px 15px' },
-                hexagons: { image: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0l43.3 25v50L50 100 6.7 75V25z' fill='none' stroke='${encodedColor}' stroke-width='1' stroke-opacity='${state.bgPatternOpacity}'/%3E%3C/svg%3E")`, size: '50px 50px' },
-                crosses: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M0 38h40v2H0zM0 0h40v2H0zM38 0v40h2V0zM0 0v40h2V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                zigzag: { image: `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10l10-10 10 10 10-10 10 10 10-10 10 10 10-10 10 10 10-10v10H0z' fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'/%3E%3C/svg%3E")`, size: '100px 20px' },
-                diamonds: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M20 0l20 20-20 20L0 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                stars: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M20 0l4.9 15.1L40 20l-15.1 4.9L20 40l-4.9-15.1L0 20l15.1-4.9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                plus: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M18 0h4v18h18v4H22v18h-4V22H0v-4h18z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                squares: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M0 0h20v20H0zM20 20h20v20H20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                triangles: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M20 0l20 20H0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                crosshatch: { image: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='${encodedColor}' stroke-opacity='${state.bgPatternOpacity}' stroke-width='1'%3E%3Cpath d='M0 0l40 40M40 0L0 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '40px 40px' },
-                bricks: { image: `url("data:image/svg+xml,%3Csvg width='100' height='40' viewBox='0 0 100 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodedColor}' fill-opacity='${state.bgPatternOpacity}'%3E%3Cpath d='M0 0h50v20H0zM50 20h50v20H50z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`, size: '100px 40px' },
-            };
-            
-            const pattern = patterns[state.bgPattern] || patterns.dots;
+            const pattern = getPatternStyle(
+                state.bgPattern,
+                state.bgPatternColor,
+                state.bgPatternOpacity,
+                state.bgPatternScale,
+                state.bgPatternStrokeWidth,
+                state.bgPatternRotation
+            );
             return { 
                 style: { 
                     backgroundColor: state.bgColor,
@@ -238,14 +217,14 @@ export function PreviewPanel() {
                                                 type="text"
                                                 placeholder="Enter your name"
                                                 className={cn(
-                                                    "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm",
+                                                    "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm border-0",
                                                     state.buttonStyle === 'rounded' && "rounded-md",
                                                     state.buttonStyle === 'pill' && "rounded-full",
                                                     state.buttonStyle === 'sharp' && "rounded-none",
                                                 )}
                                                 style={{ 
                                                     backgroundColor: state.inputColor,
-                                                    color: state.textColor === '#ffffff' ? '#fff' : '#000',
+                                                    color: state.inputTextColor || '#000000',
                                                 }}
                                             />
                                         )}
@@ -257,7 +236,7 @@ export function PreviewPanel() {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 className={cn(
-                                                    "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm",
+                                                    "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm border-0",
                                                     !state.nameField && "pr-32",
                                                     state.buttonStyle === 'rounded' && "rounded-md",
                                                     state.buttonStyle === 'pill' && "rounded-full",
@@ -265,7 +244,7 @@ export function PreviewPanel() {
                                                 )}
                                                 style={{ 
                                                     backgroundColor: state.inputColor,
-                                                    color: state.textColor === '#ffffff' ? '#fff' : '#000',
+                                                    color: state.inputTextColor || '#000000',
                                                 }}
                                             />
                                             {!state.nameField && (
@@ -414,14 +393,14 @@ export function PreviewPanel() {
                                                     type="text"
                                                     placeholder="Enter your name"
                                                     className={cn(
-                                                        "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm",
+                                                        "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm border-0",
                                                         state.buttonStyle === 'rounded' && "rounded-md",
                                                         state.buttonStyle === 'pill' && "rounded-full",
                                                         state.buttonStyle === 'sharp' && "rounded-none",
                                                     )}
                                                     style={{ 
                                                         backgroundColor: state.inputColor,
-                                                        color: state.textColor === '#ffffff' ? '#fff' : '#000',
+                                                        color: state.inputTextColor || '#000000',
                                                     }}
                                                 />
                                             )}
@@ -433,7 +412,7 @@ export function PreviewPanel() {
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     className={cn(
-                                                        "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm",
+                                                        "custom-input h-12 pl-4 transition-all backdrop-blur-sm shadow-sm border-0",
                                                         !state.nameField && "pr-32",
                                                         state.buttonStyle === 'rounded' && "rounded-md",
                                                         state.buttonStyle === 'pill' && "rounded-full",
@@ -441,7 +420,7 @@ export function PreviewPanel() {
                                                     )}
                                                     style={{ 
                                                         backgroundColor: state.inputColor,
-                                                        color: state.textColor === '#ffffff' ? '#fff' : '#000',
+                                                        color: state.inputTextColor || '#000000',
                                                     }}
                                                 />
                                                 {!state.nameField && (

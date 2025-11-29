@@ -27,10 +27,10 @@ export default function Edit() {
   const [analytics, setAnalytics] = useState<{
     total: number;
     growth: Array<{ date: string; signups: number }>;
-    recent: Array<{ id: string; email: string; createdAt: string }>;
+    recent: Array<{ id: string; email: string; name: string | null; createdAt: string }>;
   } | null>(null);
   const [submissionsLoading, setSubmissionsLoading] = useState(false);
-  const [submissions, setSubmissions] = useState<Array<{ id: string; email: string; createdAt: string }>>([]);
+  const [submissions, setSubmissions] = useState<Array<{ id: string; email: string; name: string | null; createdAt: string }>>([]);
   const [submissionsPage, setSubmissionsPage] = useState(1);
   const [submissionsTotal, setSubmissionsTotal] = useState(0);
   const [submissionsSearch, setSubmissionsSearch] = useState('');
@@ -135,9 +135,10 @@ export default function Edit() {
     }
 
     const csvContent = [
-      ['Email', 'Date'].join(','),
+      ['Email', 'Name', 'Date'].join(','),
       ...submissions.map((entry) => [
         entry.email,
+        entry.name || '',
         new Date(entry.createdAt).toISOString(),
       ].join(','))
     ].join('\n');
@@ -419,6 +420,7 @@ export default function Edit() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Email</TableHead>
+                            <TableHead>Name</TableHead>
                             <TableHead>Date</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -426,6 +428,7 @@ export default function Edit() {
                           {analytics.recent.map((entry) => (
                             <TableRow key={entry.id}>
                               <TableCell className="font-medium">{entry.email}</TableCell>
+                              <TableCell>{entry.name || '-'}</TableCell>
                               <TableCell>
                                 {new Date(entry.createdAt).toLocaleDateString('en-US', {
                                   year: 'numeric',
@@ -534,6 +537,7 @@ export default function Edit() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Email</TableHead>
+                          <TableHead>Name</TableHead>
                           <TableHead>Date</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -541,6 +545,7 @@ export default function Edit() {
                         {submissions.map((entry) => (
                           <TableRow key={entry.id}>
                             <TableCell className="font-medium">{entry.email}</TableCell>
+                            <TableCell>{entry.name || '-'}</TableCell>
                             <TableCell>
                               {new Date(entry.createdAt).toLocaleDateString('en-US', {
                                 year: 'numeric',

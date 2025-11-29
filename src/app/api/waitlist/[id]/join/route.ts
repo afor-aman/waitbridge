@@ -8,7 +8,17 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { email } = await request.json();
+    const body = await request.json();
+    const { email, name } = body;
+    
+    console.log('[Waitlist Join] Received request:', {
+      waitlistId: id,
+      email,
+      name,
+      hasName: name !== undefined && name !== null,
+      nameType: typeof name,
+      nameValue: name,
+    });
     
     if (!email || !email.includes('@')) {
       return new Response('Valid email is required', { status: 400 });
@@ -45,14 +55,28 @@ export async function POST(
     
     // Create new entry
     try {
+      const nameValue = name ? name.trim() : null;
+      const entryData = {
+        id: crypto.randomUUID(),
+        waitlistId: id,
+        email: email.toLowerCase(),
+        name: nameValue,
+      };
+      
+      console.log('[Waitlist Join] Inserting entry:', entryData);
+      
       const [newEntry] = await db
         .insert(schema.waitlistEntry)
-        .values({
-          id: crypto.randomUUID(),
-          waitlistId: id,
-          email: email.toLowerCase(),
-        })
+        .values(entryData)
         .returning();
+      
+      console.log(`[Waitlist Join] New entry created successfully:`, {
+        waitlistId: id,
+        email: email.toLowerCase(),
+        name: newEntry.name,
+        entryId: newEntry.id,
+        timestamp: new Date().toISOString(),
+      });
       
       return Response.json({ 
         success: true, 
@@ -71,7 +95,7 @@ export async function POST(
       throw insertError; // Re-throw if it's a different error
     }
   } catch (error) {
-    console.error(error);
+    console.error('[Waitlist Join] Error:', error);
     return new Response('Internal Server Error', { status: 500 });
   }
 }
