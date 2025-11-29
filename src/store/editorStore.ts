@@ -10,8 +10,16 @@ export interface EditorState {
   logo: string | null;
   font: string;
   layout: 'center' | 'left' | 'right';
-  bgType: 'solid' | 'gradient' | 'image';
+  layoutType: 'simple' | 'split';
+  textPosition: 'left' | 'right' | 'top';
+  showSocialProof: boolean;
+  nameField: boolean;
+  bgType: 'solid' | 'gradient' | 'pattern' | 'image';
   bgGradient: string;
+  bgPattern: string;
+  bgPatternColor: string;
+  bgPatternOpacity: number;
+  bgImage: string | null;
   buttonStyle: 'rounded' | 'pill' | 'sharp';
   buttonText: string;
   buttonColor: string;
@@ -37,8 +45,16 @@ export const INITIAL_STATE: EditorState = {
   logo: null,
   font: 'inter',
   layout: 'center',
+  layoutType: 'simple',
+  textPosition: 'left',
+  showSocialProof: true,
+  nameField: false,
   bgType: 'solid',
   bgGradient: 'from-blue-500 to-purple-600',
+  bgPattern: 'dots',
+  bgPatternColor: '#000000',
+  bgPatternOpacity: 0.1,
+  bgImage: null,
   buttonStyle: 'pill',
   buttonText: 'Join',
   buttonColor: '#000000',
@@ -52,7 +68,13 @@ export const INITIAL_STATE: EditorState = {
 export const useEditorStore = create<EditorStore>((set, get) => ({
   ...INITIAL_STATE,
   updateState: (key, value) => set((state) => ({ ...state, [key]: value })),
-  setFullState: (newState) => set(() => ({ ...newState, updateState: get().updateState, setFullState: get().setFullState, getState: get().getState })),
+  setFullState: (newState) => set(() => ({ 
+    ...INITIAL_STATE, // Start with defaults for any missing fields
+    ...newState, // Override with loaded state
+    updateState: get().updateState, 
+    setFullState: get().setFullState, 
+    getState: get().getState 
+  })),
   getState: () => {
     const state = get();
     const { updateState, setFullState, getState, ...editorState } = state;
