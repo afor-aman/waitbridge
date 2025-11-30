@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { getPatternStyle } from '@/lib/patterns';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 const FONT_FAMILIES = [
     { value: 'inter', label: 'Inter', class: 'font-sans' },
@@ -130,6 +131,142 @@ export function SidebarControls() {
                                 </button>
                                 {openSection === 'content' && (
                                     <div className="space-y-4 pl-2 border-l-2 border-border/50">
+                                        {/* Logo Section */}
+                                        <div className="space-y-3 p-3 border border-border rounded-lg bg-muted/30">
+                                            <Label className="text-xs font-semibold block">Logo</Label>
+                                            
+                                            {/* Upload Option */}
+                                            <div className="space-y-2">
+                                                <Label className="text-xs text-muted-foreground">Upload Logo</Label>
+                                                <ImageUpload
+                                                    value={state.logo}
+                                                    onChange={(url) => handleChange('logo', url)}
+                                                />
+                                            </div>
+
+                                            {/* Divider */}
+                                            <div className="flex items-center gap-2 py-1">
+                                                <div className="flex-1 h-px bg-border"></div>
+                                                <span className="text-[10px] text-muted-foreground">OR</span>
+                                                <div className="flex-1 h-px bg-border"></div>
+                                            </div>
+
+                                            {/* URL Option */}
+                                            <div className="grid w-full items-center gap-2">
+                                                <Label htmlFor="logo" className="text-xs text-muted-foreground">Logo URL</Label>
+                                                <Input
+                                                    id="logo"
+                                                    type="text"
+                                                    placeholder="https://example.com/logo.png"
+                                                    value={state.logo || ''}
+                                                    onChange={(e) => handleChange('logo', e.target.value || null)}
+                                                    className="h-8 text-xs"
+                                                />
+                                            </div>
+                                            
+                                            <p className="text-[10px] text-muted-foreground">
+                                                Upload a logo or enter a URL. The logo will appear at the top of your waitlist.
+                                            </p>
+
+                                            {/* Logo Settings */}
+                                            {state.logo && (
+                                                <div className="pt-3 border-t border-border/50 space-y-3">
+                                                    <div className="grid w-full items-center gap-2">
+                                                        <Label className="text-xs">Size: {state.logoSize}px</Label>
+                                                        <input
+                                                            type="range"
+                                                            min="32"
+                                                            max="128"
+                                                            step="4"
+                                                            value={state.logoSize}
+                                                            onChange={(e) => handleChange('logoSize', parseInt(e.target.value))}
+                                                            className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                        />
+                                                        <div className="flex justify-between text-[10px] text-muted-foreground">
+                                                            <span>32px</span>
+                                                            <span>128px</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid w-full items-center gap-2">
+                                                        <Label className="text-xs">Padding: {state.logoPadding}px</Label>
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="16"
+                                                            step="1"
+                                                            value={state.logoPadding}
+                                                            onChange={(e) => handleChange('logoPadding', parseInt(e.target.value))}
+                                                            className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                        />
+                                                        <div className="flex justify-between text-[10px] text-muted-foreground">
+                                                            <span>0px</span>
+                                                            <span>16px</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid w-full items-center gap-2">
+                                                        <Label className="text-xs">Border Width: {state.logoBorderWidth}px</Label>
+                                                        <input
+                                                            type="range"
+                                                            min="0"
+                                                            max="8"
+                                                            step="1"
+                                                            value={state.logoBorderWidth}
+                                                            onChange={(e) => handleChange('logoBorderWidth', parseInt(e.target.value))}
+                                                            className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                                                        />
+                                                        <div className="flex justify-between text-[10px] text-muted-foreground">
+                                                            <span>0px</span>
+                                                            <span>8px</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid w-full items-center gap-2">
+                                                        <Label htmlFor="logoBorderColor" className="text-xs">Border Color</Label>
+                                                        <div className="flex gap-2 items-center">
+                                                            <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shadow-sm">
+                                                                <Input
+                                                                    type="color"
+                                                                    id="logoBorderColor"
+                                                                    value={state.logoBorderColor}
+                                                                    className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                                    onChange={(e) => handleChange('logoBorderColor', e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <Input
+                                                                type="text"
+                                                                value={state.logoBorderColor}
+                                                                onChange={(e) => handleChange('logoBorderColor', e.target.value)}
+                                                                className="flex-1 h-8 font-mono text-xs"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid w-full items-center gap-2">
+                                                        <Label htmlFor="logoBgColor" className="text-xs">Background Color</Label>
+                                                        <div className="flex gap-2 items-center">
+                                                            <div className="relative w-8 h-8 rounded-md overflow-hidden border border-border shadow-sm">
+                                                                <Input
+                                                                    type="color"
+                                                                    id="logoBgColor"
+                                                                    value={state.logoBgColor}
+                                                                    className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer"
+                                                                    onChange={(e) => handleChange('logoBgColor', e.target.value)}
+                                                                />
+                                                            </div>
+                                                            <Input
+                                                                type="text"
+                                                                value={state.logoBgColor}
+                                                                onChange={(e) => handleChange('logoBgColor', e.target.value)}
+                                                                className="flex-1 h-8 font-mono text-xs"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
                                         <div className="grid w-full items-center gap-2">
                                             <Label htmlFor="headerText" className="text-xs">Header Text</Label>
                                             <Input
@@ -235,6 +372,45 @@ export function SidebarControls() {
                                                     ))}
                                                 </div>
                                                 <p className="text-[10px] text-muted-foreground">On mobile, text always appears on top</p>
+                                            </div>
+                                        )}
+
+                                        {state.layoutType === 'split' && (
+                                            <div className="space-y-3 p-3 border border-border rounded-lg bg-muted/30">
+                                                <Label className="text-xs font-semibold block">Hero Image</Label>
+                                                
+                                                {/* Upload Option */}
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs text-muted-foreground">Upload Image</Label>
+                                                    <ImageUpload
+                                                        value={state.heroImage}
+                                                        onChange={(url) => handleChange('heroImage', url)}
+                                                    />
+                                                </div>
+
+                                                {/* Divider */}
+                                                <div className="flex items-center gap-2 py-1">
+                                                    <div className="flex-1 h-px bg-border"></div>
+                                                    <span className="text-[10px] text-muted-foreground">OR</span>
+                                                    <div className="flex-1 h-px bg-border"></div>
+                                                </div>
+
+                                                {/* URL Option */}
+                                                <div className="grid w-full items-center gap-2">
+                                                    <Label htmlFor="heroImage" className="text-xs text-muted-foreground">Image URL</Label>
+                                                    <Input
+                                                        id="heroImage"
+                                                        type="text"
+                                                        placeholder="https://example.com/hero-image.jpg"
+                                                        value={state.heroImage || ''}
+                                                        onChange={(e) => handleChange('heroImage', e.target.value || null)}
+                                                        className="h-8 text-xs"
+                                                    />
+                                                </div>
+                                                
+                                                <p className="text-[10px] text-muted-foreground">
+                                                    Upload an image or enter a URL. This will be displayed in the split view.
+                                                </p>
                                             </div>
                                         )}
 
@@ -574,8 +750,26 @@ export function SidebarControls() {
                                         )}
 
                                         {state.bgType === 'image' && (
-                                            <div className="space-y-4 p-3 border border-border rounded-lg bg-muted/30">
+                                            <div className="space-y-3 p-3 border border-border rounded-lg bg-muted/30">
                                                 <Label className="text-xs font-semibold block">Image Settings</Label>
+                                                
+                                                {/* Upload Option */}
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs text-muted-foreground">Upload Image</Label>
+                                                    <ImageUpload
+                                                        value={state.bgImage}
+                                                        onChange={(url) => handleChange('bgImage', url)}
+                                                    />
+                                                </div>
+
+                                                {/* Divider */}
+                                                <div className="flex items-center gap-2 py-1">
+                                                    <div className="flex-1 h-px bg-border"></div>
+                                                    <span className="text-[10px] text-muted-foreground">OR</span>
+                                                    <div className="flex-1 h-px bg-border"></div>
+                                                </div>
+
+                                                {/* URL Option */}
                                                 <div className="grid w-full items-center gap-2">
                                                     <Label htmlFor="bgImage" className="text-xs text-muted-foreground">Image URL</Label>
                                                     <Input
@@ -587,20 +781,9 @@ export function SidebarControls() {
                                                         className="h-8 text-xs"
                                                     />
                                                 </div>
-                                                {state.bgImage && (
-                                                    <div className="rounded-md overflow-hidden border border-border">
-                                                        <img 
-                                                            src={state.bgImage} 
-                                                            alt="Background preview" 
-                                                            className="w-full h-24 object-cover"
-                                                            onError={(e) => {
-                                                                (e.target as HTMLImageElement).style.display = 'none';
-                                                            }}
-                                                        />
-                                                    </div>
-                                                )}
+                                                
                                                 <p className="text-[10px] text-muted-foreground">
-                                                    Enter a URL to an image. For best results, use a high-resolution image.
+                                                    Upload an image or enter a URL. For best results, use a high-resolution image.
                                                 </p>
                                             </div>
                                         )}

@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { PreviewPanel } from '@/components/editor/PreviewPanel';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Save, Loader2, Copy, Check, Monitor, Smartphone, Users, TrendingUp, Download, Search, RefreshCw } from 'lucide-react';
+import { Loader2, Copy, Check, Users, TrendingUp, Download, Search, RefreshCw } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEditorStore } from '@/store/editorStore';
+import { useDashboardStore } from '@/store/dashboardStore';
 import { toast } from 'sonner';
-import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -20,9 +19,8 @@ export default function Edit() {
   const params = useParams();
   const id = params.id as string;
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const { activeTab, previewMode } = useDashboardStore();
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [analytics, setAnalytics] = useState<{
     total: number;
@@ -36,7 +34,7 @@ export default function Edit() {
   const [submissionsSearch, setSubmissionsSearch] = useState('');
   const [submissionsSearchInput, setSubmissionsSearchInput] = useState('');
   const itemsPerPage = 10; // Changed to 10 for better UX with smaller page size
-  const { setFullState, getState } = useEditorStore();
+  const { setFullState } = useEditorStore();
   
   const shareableLink = typeof window !== 'undefined' 
     ? `${window.location.origin}/waitlist/${id}`
@@ -155,31 +153,6 @@ export default function Edit() {
     toast.success('CSV exported successfully!');
   };
 
-  // Save settings
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const currentState = getState();
-      const res = await fetch(`/api/waitlist/${id}/settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentState),
-      });
-
-      if (res.ok) {
-        toast.success('Settings saved successfully!');
-      } else {
-        const err = await res.text();
-        toast.error(`Failed to save: ${err}`);
-      }
-    } catch (error) {
-      console.error('Failed to save settings:', error);
-      toast.error('Failed to save settings');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="h-full w-full flex items-center justify-center">
@@ -189,53 +162,9 @@ export default function Edit() {
   }
 
   return (
-    <div className="h-full w-full p-6 bg-muted/20">
-      <Tabs defaultValue="edit" className="h-full w-full flex flex-col">
-        <div className="flex justify-between items-center mb-6">
-          <TabsList className="grid w-[600px] grid-cols-4">
-            <TabsTrigger value="edit">Edit</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="submissions">Submissions</TabsTrigger>
-            <TabsTrigger value="share">Share</TabsTrigger>
-          </TabsList>
-          <TabsContent value="edit" className="flex justify-end items-center gap-2">
-            <div className="flex items-center gap-1 border rounded-md p-1">
-              <Button
-                type="button"
-                variant={previewMode === 'desktop' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setPreviewMode('desktop')}
-                className="h-8 px-3"
-              >
-                <Monitor className="h-4 w-4" />
-              </Button>
-              <Button
-                type="button"
-                variant={previewMode === 'mobile' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setPreviewMode('mobile')}
-                className="h-8 px-3"
-              >
-                <Smartphone className="h-4 w-4" />
-              </Button>
-            </div>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="mr-2 h-4 w-4" />
-                Save
-              </>
-            )}
-          </Button>
-            </TabsContent>
-        </div>
-        
-        <TabsContent value="edit" className="flex-1 mt-0 h-full overflow-hidden flex flex-col">
+    <div className="h-full w-full bg-muted/20">
+      {activeTab === 'edit' && (
+        <div className="h-full w-full overflow-hidden flex flex-col">
           {/* Preview Container */}
           <div className={cn(
             "flex-1 flex items-center justify-center transition-all duration-300",
@@ -247,9 +176,11 @@ export default function Edit() {
               <PreviewPanel />
             </div>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="analytics" className="flex-1 mt-0 h-full overflow-y-auto">
+        </div>
+      )}
+      
+      {activeTab === 'analytics' && (
+        <div className="h-full w-full overflow-y-auto">
           <div className="space-y-6">
             {analyticsLoading ? (
               <div className="flex items-center justify-center h-64">
@@ -456,9 +387,11 @@ export default function Edit() {
               </div>
             )}
           </div>
-        </TabsContent>
-        
-        <TabsContent value="submissions" className="flex-1 mt-0 h-full overflow-y-auto">
+        </div>
+      )}
+      
+      {activeTab === 'submissions' && (
+        <div className="h-full w-full overflow-y-auto">
           <div className="space-y-4">
             <Card>
               <CardHeader>
@@ -600,9 +533,11 @@ export default function Edit() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="share" className="flex-1 mt-0 h-full flex items-center justify-center">
+        </div>
+      )}
+      
+      {activeTab === 'share' && (
+        <div className="h-full w-full flex items-center justify-center">
           <Card className="w-full max-w-2xl">
             <CardHeader>
               <CardTitle>Share Your Waitlist</CardTitle>
@@ -649,8 +584,8 @@ export default function Edit() {
           </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

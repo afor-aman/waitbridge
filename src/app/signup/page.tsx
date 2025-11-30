@@ -1,6 +1,7 @@
 import { Loader } from "lucide-react"
 
 import { SignupForm } from "@/components/partials/signup-form"
+import Image from "next/image"
 
 export default function SignupPage() {
   return (
@@ -21,10 +22,12 @@ export default function SignupPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden overflow-hidden lg:block">
-        <img
+        <Image
           src="/building.png"
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          width={1200}
+          height={800}
         />
       <div className="absolute inset-0 bg-black/60"></div>
 

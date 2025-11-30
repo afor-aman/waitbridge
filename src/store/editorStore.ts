@@ -8,6 +8,11 @@ export interface EditorState {
   textColor: string;
   subTextColor: string;
   logo: string | null;
+  logoSize: number;
+  logoPadding: number;
+  logoBorderWidth: number;
+  logoBorderColor: string;
+  logoBgColor: string;
   font: string;
   layout: 'center' | 'left' | 'right';
   layoutType: 'simple' | 'split';
@@ -23,6 +28,7 @@ export interface EditorState {
   bgPatternStrokeWidth: number;
   bgPatternRotation: number;
   bgImage: string | null;
+  heroImage: string | null;
   buttonStyle: 'rounded' | 'pill' | 'sharp';
   buttonText: string;
   buttonColor: string;
@@ -47,6 +53,11 @@ export const INITIAL_STATE: EditorState = {
   textColor: '#000000',
   subTextColor: '#000000',
   logo: null,
+  logoSize: 64,
+  logoPadding: 0,
+  logoBorderWidth: 2,
+  logoBorderColor: '#000000',
+  logoBgColor: '#ffffff',
   font: 'inter',
   layout: 'center',
   layoutType: 'simple',
@@ -62,6 +73,7 @@ export const INITIAL_STATE: EditorState = {
   bgPatternStrokeWidth: 1,
   bgPatternRotation: 0,
   bgImage: null,
+  heroImage: null,
   buttonStyle: 'pill',
   buttonText: 'Join',
   buttonColor: '#000000',

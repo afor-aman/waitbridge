@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Loader, Loader2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { getPatternStyle } from '@/lib/patterns';
-
 import { useEditorStore } from '@/store/editorStore';
+import Image from 'next/image';
 
 export function PreviewPanel() {
     const state = useEditorStore((state) => state);
@@ -142,7 +142,26 @@ export function PreviewPanel() {
                     <div className="w-full max-w-lg space-y-8 mx-auto">
                         {state.logo && (
                             <div className="flex mb-8 justify-center">
-                                <img src={state.logo} alt="Logo" className="h-16 w-auto object-contain drop-shadow-sm" />
+                                <div 
+                                    className="rounded-full overflow-hidden shadow-sm flex items-center justify-center"
+                                    style={{ 
+                                        width: `${state.logoSize}px`, 
+                                        height: `${state.logoSize}px`,
+                                        padding: `${state.logoPadding}px`,
+                                        borderWidth: `${state.logoBorderWidth}px`,
+                                        borderStyle: 'solid',
+                                        borderColor: state.logoBorderColor,
+                                        backgroundColor: state.logoBgColor
+                                    }}
+                                >
+                                    <Image 
+                                        src={state.logo} 
+                                        alt="Logo" 
+                                        className="w-full h-full object-cover" 
+                                        width={state.logoSize}
+                                        height={state.logoSize}
+                                    />
+                                </div>
                             </div>
                         )}
 
@@ -318,7 +337,26 @@ export function PreviewPanel() {
                             <div className="w-full max-w-lg space-y-6 mx-auto">
                                 {state.logo && (
                                     <div className="flex mb-6 justify-center">
-                                        <img src={state.logo} alt="Logo" className="h-12 w-auto object-contain drop-shadow-sm" />
+                                        <div 
+                                            className="rounded-full overflow-hidden shadow-sm flex items-center justify-center"
+                                            style={{ 
+                                                width: `${state.logoSize}px`, 
+                                                height: `${state.logoSize}px`,
+                                                padding: `${state.logoPadding}px`,
+                                                borderWidth: `${state.logoBorderWidth}px`,
+                                                borderStyle: 'solid',
+                                                borderColor: state.logoBorderColor,
+                                                backgroundColor: state.logoBgColor
+                                            }}
+                                        >
+                                            <Image 
+                                                src={state.logo} 
+                                                alt="Logo" 
+                                                className="w-full h-full object-cover" 
+                                                width={state.logoSize}
+                                                height={state.logoSize}
+                                            />
+                                        </div>
                                     </div>
                                 )}
 
@@ -482,11 +520,25 @@ export function PreviewPanel() {
                                 state.textPosition === 'left' && "@[600px]:order-2",
                                 state.textPosition === 'top' && "@[600px]:order-2"
                             )}>
-                                <img 
-                                    src="/building.png" 
-                                    alt="Product preview" 
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                />
+                                {state.heroImage ? (
+                                    <Image 
+                                        src={state.heroImage} 
+                                        alt="Hero image" 
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        width={1200}
+                                        height={800}
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900">
+                                        <div className="text-center p-8">
+                                            <svg className="w-16 h-16 mx-auto mb-4 text-zinc-400 dark:text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-1">Add Hero Image</p>
+                                            <p className="text-xs text-zinc-500 dark:text-zinc-500">Recommended: 1200×800px</p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

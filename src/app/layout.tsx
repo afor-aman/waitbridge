@@ -1,6 +1,11 @@
-// NOTE: Add logo feature also
+
 // NOTE: Fix the font and gap of the sidebar so things look nice and distinguisabel
-// NOTE: Add cdn and storage
+// NOTE: Make widget
+
+//NEXT STURDATE
+// NOTE: Give option for animation
+// NOTE: Add templates
+// NOTE: See if UI/UX can be better
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
