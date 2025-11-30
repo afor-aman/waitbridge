@@ -8,6 +8,8 @@ import { Loader, Loader2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import type { EditorState } from '@/store/editorStore';
+import { getPatternStyle } from '@/lib/patterns';
+import Image from 'next/image';
 
 export default function WidgetPage() {
   const params = useParams();
@@ -125,6 +127,54 @@ export default function WidgetPage() {
     }
   };
 
+  const getBackgroundStyle = () => {
+    if (!settings || isTransparent) return { style: { backgroundColor: 'transparent' } };
+    
+    if (settings.bgType === 'gradient') {
+      if (settings.bgGradient.startsWith('css:')) {
+        const cssGradient = settings.bgGradient.replace('css:', '');
+        return { style: { backgroundImage: cssGradient } };
+      }
+      return { className: `bg-gradient-to-br ${settings.bgGradient}` };
+    }
+    if (settings.bgType === 'pattern') {
+      const bgPattern = settings.bgPattern || 'dots';
+      const bgPatternColor = settings.bgPatternColor || '#000000';
+      const bgPatternOpacity = settings.bgPatternOpacity ?? 0.1;
+      const bgPatternScale = settings.bgPatternScale ?? 1;
+      const bgPatternStrokeWidth = settings.bgPatternStrokeWidth ?? 1;
+      const bgPatternRotation = settings.bgPatternRotation ?? 0;
+      
+      const pattern = getPatternStyle(
+        bgPattern,
+        bgPatternColor,
+        bgPatternOpacity,
+        bgPatternScale,
+        bgPatternStrokeWidth,
+        bgPatternRotation
+      );
+      
+      return { 
+        style: { 
+          backgroundColor: settings.bgColor,
+          backgroundImage: pattern.image,
+          backgroundSize: pattern.size,
+          backgroundPosition: pattern.position || '0 0',
+        }
+      };
+    }
+    if (settings.bgType === 'image' && settings.bgImage) {
+      return { 
+        style: { 
+          backgroundImage: `url(${settings.bgImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }
+      };
+    }
+    return { style: { backgroundColor: settings.bgColor } };
+  };
+
   const getFontClass = (font: string) => {
     const fontMap: Record<string, { class: string; family: string }> = {
       'inter': { class: 'font-sans', family: 'Inter' },
@@ -182,20 +232,71 @@ export default function WidgetPage() {
 
   const fontInfo = getFontClass(settings.font);
   const nameField = settings.nameField ?? false;
+  const showSocialProof = settings.showSocialProof ?? true;
+
+  // Social proof JSX
+  const socialProofContent = showSocialProof ? (
+    <div className="flex items-center justify-center gap-2">
+      <div className="flex -space-x-2">
+        {[
+          'bg-gradient-to-br from-pink-400 to-rose-500',
+          'bg-gradient-to-br from-blue-400 to-indigo-500',
+          'bg-gradient-to-br from-green-400 to-emerald-500',
+          'bg-gradient-to-br from-amber-400 to-orange-500',
+        ].map((gradient, i) => (
+          <div
+            key={i}
+            className={`w-6 h-6 rounded-full border-2 border-white dark:border-zinc-900 ${gradient}`}
+          />
+        ))}
+      </div>
+      <p className="text-xs opacity-70" style={{ color: settings.subTextColor || settings.textColor }}>
+        <span className="font-semibold">500+</span> joined
+      </p>
+    </div>
+  ) : null;
+
+  const bgProps = getBackgroundStyle();
 
   return (
     <div 
       className={cn(
         "w-full min-h-[100px] flex flex-col items-center justify-center p-4",
-        fontInfo.class
+        fontInfo.class,
+        bgProps.className
       )}
       style={{ 
-        backgroundColor: isTransparent ? 'transparent' : settings.bgColor,
+        ...bgProps.style,
         color: settings.textColor,
         fontFamily: `'${fontInfo.family}', ${fontInfo.class.includes('serif') ? 'serif' : fontInfo.class.includes('mono') ? 'monospace' : 'sans-serif'}` 
       }}
     >
       <div className="w-full max-w-md space-y-6 text-center">
+        {settings.logo && (
+          <div className="flex mb-4 justify-center">
+            <div 
+              className="rounded-full overflow-hidden shadow-sm flex items-center justify-center"
+              style={{ 
+                width: `${settings.logoSize || 64}px`, 
+                height: `${settings.logoSize || 64}px`,
+                padding: `${settings.logoPadding || 0}px`,
+                borderWidth: `${settings.logoBorderWidth ?? 2}px`,
+                borderStyle: 'solid',
+                borderColor: settings.logoBorderColor || '#000000',
+                backgroundColor: settings.logoBgColor || '#ffffff'
+              }}
+            >
+              <Image 
+                src={settings.logo} 
+                alt="Logo" 
+                className="w-full h-full object-cover" 
+                width={settings.logoSize || 64}
+                height={settings.logoSize || 64}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: settings.textColor }}>
             {settings.headerText}
@@ -204,6 +305,8 @@ export default function WidgetPage() {
             {settings.subText}
           </p>
         </div>
+
+        {socialProofContent}
 
         {submitted ? (
           <div className={cn(
