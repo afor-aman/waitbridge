@@ -20,6 +20,8 @@ export default function Edit() {
   const id = params.id as string;
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [copiedWidget, setCopiedWidget] = useState(false);
+  const [transparentWidget, setTransparentWidget] = useState(true);
   const { activeTab, previewMode } = useDashboardStore();
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [analytics, setAnalytics] = useState<{
@@ -38,6 +40,11 @@ export default function Edit() {
   
   const shareableLink = typeof window !== 'undefined' 
     ? `${window.location.origin}/waitlist/${id}`
+    : '';
+
+  const widgetCode = typeof window !== 'undefined'
+    ? `<script src="${window.location.origin}/embed.js" defer></script>
+<div class="waitbridge-embed" data-waitlist-id="${id}"${transparentWidget ? ' data-transparent="true"' : ''}></div>`
     : '';
 
   // Load settings on mount
@@ -582,6 +589,56 @@ export default function Edit() {
                   Anyone with this link can join your waitlist. The page will automatically use the settings you've configured.
                 </p>
           </div>
+              <div className="pt-4 border-t space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">Embed Widget</label>
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="transparent-toggle" className="text-xs text-muted-foreground cursor-pointer select-none">
+                        Transparent Background
+                      </label>
+                      <input
+                        id="transparent-toggle"
+                        type="checkbox"
+                        checked={transparentWidget}
+                        onChange={(e) => setTransparentWidget(e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={widgetCode}
+                      readOnly
+                      className="font-mono text-sm"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(widgetCode);
+                          setCopiedWidget(true);
+                          toast.success('Widget code copied!');
+                          setTimeout(() => setCopiedWidget(false), 2000);
+                        } catch (error) {
+                          toast.error('Failed to copy code');
+                        }
+                      }}
+                    >
+                      {copiedWidget ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Copy and paste this code into your website to embed the waitlist form.
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

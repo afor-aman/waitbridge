@@ -1,8 +1,6 @@
 
-// NOTE: Fix the font and gap of the sidebar so things look nice and distinguisabel
-// NOTE: Make widget
-
-//NEXT STURDATE
+//NEXT SATURDATE
+// NOTE: Social Proof
 // NOTE: Give option for animation
 // NOTE: Add templates
 // NOTE: See if UI/UX can be better
@@ -34,6 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      
       {/* <Script
 				id="g-script1"
 				strategy="lazyOnload"

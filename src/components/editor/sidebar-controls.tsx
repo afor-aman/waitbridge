@@ -414,14 +414,14 @@ export function SidebarControls() {
                                             </div>
                                         )}
 
-                                        <div className="flex items-center justify-between gap-2">
+                                        {/* <div className="flex items-center justify-between gap-2">
                                             <Label htmlFor="showSocialProof" className="text-xs">Show Social Proof</Label>
                                             <Switch
                                                 id="showSocialProof"
                                                 checked={state.showSocialProof}
                                                 onCheckedChange={(checked) => handleChange('showSocialProof', checked)}
                                             />
-                                        </div>
+                                        </div> */}
 
                                         <div className="grid w-full items-center gap-2">
                                             <Label className="text-xs">Font Family</Label>

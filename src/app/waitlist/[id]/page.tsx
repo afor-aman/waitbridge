@@ -50,7 +50,7 @@ export default function PublicWaitlistPage() {
               layout: 'center',
               layoutType: 'simple',
               textPosition: 'left',
-              showSocialProof: true,
+              showSocialProof: false,
               nameField: false,
               bgType: 'solid',
               bgGradient: 'from-blue-500 to-purple-600',

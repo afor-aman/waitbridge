@@ -62,7 +62,7 @@ export const INITIAL_STATE: EditorState = {
   layout: 'center',
   layoutType: 'simple',
   textPosition: 'left',
-  showSocialProof: true,
+  showSocialProof: false,
   nameField: false,
   bgType: 'solid',
   bgGradient: 'from-blue-500 to-purple-600',
