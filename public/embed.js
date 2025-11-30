@@ -8,6 +8,7 @@
       
       const waitlistId = container.getAttribute('data-waitlist-id');
       const transparent = container.getAttribute('data-transparent') === 'true';
+      const hideLogo = container.getAttribute('data-hide-logo') === 'true';
       
       if (!waitlistId) {
         console.error('Waitbridge: No waitlist ID provided');
@@ -22,6 +23,9 @@
       let widgetUrl = `${baseUrl}/widget/${waitlistId}`;
       if (transparent) {
         widgetUrl += '?transparent=true';
+      }
+      if (hideLogo) {
+        widgetUrl += (transparent ? '&' : '?') + 'hideLogo=true';
       }
       
       iframe.src = widgetUrl;

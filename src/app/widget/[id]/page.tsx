@@ -16,6 +16,7 @@ export default function WidgetPage() {
   const searchParams = useSearchParams();
   const id = params.id as string;
   const isTransparent = searchParams.get('transparent') === 'true';
+  const hideLogo = searchParams.get('hideLogo') === 'true';
   
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -261,7 +262,7 @@ export default function WidgetPage() {
   return (
     <div 
       className={cn(
-        "w-full min-h-[100px] flex flex-col items-center justify-center p-4",
+        "w-full min-h-[100px] flex flex-col items-center justify-center p-3",
         fontInfo.class,
         bgProps.className
       )}
@@ -271,9 +272,9 @@ export default function WidgetPage() {
         fontFamily: `'${fontInfo.family}', ${fontInfo.class.includes('serif') ? 'serif' : fontInfo.class.includes('mono') ? 'monospace' : 'sans-serif'}` 
       }}
     >
-      <div className="w-full max-w-md space-y-6 text-center">
-        {settings.logo && (
-          <div className="flex mb-4 justify-center">
+      <div className="w-full max-w-md space-y-3 text-center">
+        {settings.logo && !hideLogo && (
+          <div className="flex mb-2 justify-center">
             <div 
               className="rounded-full overflow-hidden shadow-sm flex items-center justify-center"
               style={{ 
@@ -412,7 +413,7 @@ export default function WidgetPage() {
             )}
           </form>
         )}
-        <div className="mt-4 flex justify-center">
+        <div className="mt-2 flex justify-center">
           <a href="https://waitbridge.com/ref=badge" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black dark:bg-white text-[10px] font-medium text-white dark:invert font-sans hover:opacity-80 transition-opacity">
             <span>Built using</span>
             <span className="font-bold flex gap-1"><Loader className="w-3 h-3" /> waitbridge</span>

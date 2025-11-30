@@ -22,6 +22,7 @@ export default function Edit() {
   const [copied, setCopied] = useState(false);
   const [copiedWidget, setCopiedWidget] = useState(false);
   const [transparentWidget, setTransparentWidget] = useState(true);
+  const [hideLogo, setHideLogo] = useState(false);
   const { activeTab, previewMode } = useDashboardStore();
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [analytics, setAnalytics] = useState<{
@@ -44,7 +45,7 @@ export default function Edit() {
 
   const widgetCode = typeof window !== 'undefined'
     ? `<script src="${window.location.origin}/embed.js" defer></script>
-<div class="waitbridge-embed" data-waitlist-id="${id}"${transparentWidget ? ' data-transparent="true"' : ''}></div>`
+<div class="waitbridge-embed" data-waitlist-id="${id}"${transparentWidget ? ' data-transparent="true"' : ''}${hideLogo ? ' data-hide-logo="true"' : ''}></div>`
     : '';
 
   // Load settings on mount
@@ -602,6 +603,18 @@ export default function Edit() {
                         type="checkbox"
                         checked={transparentWidget}
                         onChange={(e) => setTransparentWidget(e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="hide-logo-toggle" className="text-xs text-muted-foreground cursor-pointer select-none">
+                        Hide Logo
+                      </label>
+                      <input
+                        id="hide-logo-toggle"
+                        type="checkbox"
+                        checked={hideLogo}
+                        onChange={(e) => setHideLogo(e.target.checked)}
                         className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
                       />
                     </div>
