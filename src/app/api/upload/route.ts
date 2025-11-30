@@ -3,7 +3,7 @@ import { getCurrentUser } from '@/utils/getCurrentUser'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-
+const STORAGE_FOLDER_NAME = "Waitbridge"
 // Initialize R2 client
 const R2 = new S3Client({
   region: 'auto',
@@ -60,14 +60,14 @@ export async function POST(request: Request) {
     await R2.send(
       new PutObjectCommand({
         Bucket: process.env.R2_BUCKET_NAME!,
-        Key: filename,
+        Key: STORAGE_FOLDER_NAME + "/" + filename,
         Body: buffer,
         ContentType: file.type,
       })
     )
 
     // Construct public URL
-    const publicUrl = `${process.env.R2_PUBLIC_URL}/${filename}`
+    const publicUrl = `${process.env.R2_PUBLIC_URL}/${STORAGE_FOLDER_NAME}/${filename}`
 
     return Response.json({ url: publicUrl })
   } catch (error) {
