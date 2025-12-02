@@ -28,6 +28,8 @@ const plans = [
       "Customization",
       "Analytics",
       "Export data",
+      "Removal of brand badge",
+      "Access to all upcoming features",
     ],
     cta: "Get Lifetime Access",
     popular: true,
