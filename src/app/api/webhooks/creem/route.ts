@@ -4,6 +4,7 @@ import { db } from '@/db/drizzle';
 import { schema } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import * as crypto from 'crypto';
+import { nanoid } from 'nanoid';
 
 /**
  * Verify Creem.io webhook signature
@@ -141,8 +142,33 @@ export async function POST(request: Request) {
           userId: result[0].id
         });
       } else {
-        console.warn(`User not found for payment update: ${email}`);
-        return new Response(`User with email ${email} not found`, { status: 404 });
+        // User doesn't exist yet - store as pending payment
+        // Will be applied when user signs up
+        console.log(`User not found for payment, storing as pending: ${email}`);
+        
+        // Upsert pending payment (in case of duplicate webhook calls)
+        await db
+          .insert(schema.pendingPayment)
+          .values({
+            id: nanoid(),
+            email: email,
+            customerId: customer.id || null,
+            paymentData: payload,
+          })
+          .onConflictDoUpdate({
+            target: schema.pendingPayment.email,
+            set: {
+              customerId: customer.id || null,
+              paymentData: payload,
+            },
+          });
+
+        console.log(`Pending payment stored for: ${email}`);
+        return Response.json({ 
+          success: true, 
+          message: 'Payment stored as pending - will be applied when user signs up',
+          email: email
+        });
       }
     }
 

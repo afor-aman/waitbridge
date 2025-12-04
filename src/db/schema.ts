@@ -102,6 +102,17 @@ export const waitlistEntry = pgTable('waitlist_entry', {
     uniqueWaitlistEmail: unique().on(table.waitlistId, table.email),
 }));
 
+// Store payments when user doesn't exist yet - applied when user signs up
+export const pendingPayment = pgTable('pending_payment', {
+    id: text('id').primaryKey(),
+    email: text('email').notNull().unique(),
+    customerId: text('customer_id'),
+    paymentData: jsonb('payment_data'), // Store full payment payload for reference
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    appliedAt: timestamp('applied_at'), // When the payment was applied to a user
+    userId: text('user_id').references(() => user.id, { onDelete: 'set null' }), // Linked user after signup
+});
+
 export const schema = {
     user,
     session,
@@ -111,4 +122,5 @@ export const schema = {
     rateLimit,
     waitlist,
     waitlistEntry,
+    pendingPayment,
 };

@@ -6,6 +6,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '@/db/drizzle';
 import { nextCookies } from 'better-auth/next-js';
 import { schema } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const auth = betterAuth({
     trustedOrigins: ["https://www.waitbridge.com", "https://waitbridge.com", "http://waitbridge.com", "http://www.waitbridge.com"],
@@ -45,6 +46,44 @@ export const auth = betterAuth({
         cookieCache: {
             enabled: true,
             maxAge: 5 * 60,
+        },
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                after: async (user) => {
+                    // Check if there's a pending payment for this user's email
+                    try {
+                        const pendingPayment = await db
+                            .select()
+                            .from(schema.pendingPayment)
+                            .where(eq(schema.pendingPayment.email, user.email))
+                            .limit(1);
+
+                        if (pendingPayment.length > 0 && !pendingPayment[0].appliedAt) {
+                            // Apply the payment to the user
+                            await db
+                                .update(schema.user)
+                                .set({ payment: true })
+                                .where(eq(schema.user.id, user.id));
+
+                            // Mark the pending payment as applied
+                            await db
+                                .update(schema.pendingPayment)
+                                .set({
+                                    appliedAt: new Date(),
+                                    userId: user.id,
+                                })
+                                .where(eq(schema.pendingPayment.id, pendingPayment[0].id));
+
+                            console.log(`Applied pending payment to new user: ${user.email} (${user.id})`);
+                        }
+                    } catch (error) {
+                        console.error(`Error applying pending payment for user ${user.email}:`, error);
+                        // Don't throw - we don't want to fail user creation if payment application fails
+                    }
+                },
+            },
         },
     },
     plugins: [jwt(), nextCookies()],
