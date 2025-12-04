@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 export function Hero() {
   return (
@@ -31,6 +32,37 @@ export function Hero() {
                 Sign In
               </Button>
             </Link>
+          </div>
+          
+          {/* User avatars with count */}
+          <div className="flex items-center gap-3 pt-2">
+            <div className="flex -space-x-2">
+              {[
+                { name: "Alex", id: "alex" },
+                { name: "Sarah", id: "sarah" },
+                { name: "Mike", id: "mike" },
+                { name: "Emma", id: "emma" },
+                { name: "David", id: "david" },
+              ].map((user, index) => (
+                <Avatar
+                  key={user.id}
+                  className="border-2 border-background size-10 hover:z-10 transition-transform hover:scale-110"
+                  style={{ zIndex: 5 - index }}
+                >
+                  <AvatarImage
+                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
+                    alt={user.name}
+                  />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+                    {user.name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+            </div>
+            <div className="flex flex-col">
+              <p className="text-sm font-medium text-foreground">10+ users</p>
+              <p className="text-xs text-muted-foreground">Trusted by creators</p>
+            </div>
           </div>
         </div>
 

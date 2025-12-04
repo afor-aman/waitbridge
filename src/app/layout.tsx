@@ -1,6 +1,5 @@
 
 //NEXT SATURDATE
-// NOTE: Social Proof
 // NOTE: Give option for animation
 // NOTE: Add templates
 // NOTE: See if UI/UX can be better
