@@ -84,15 +84,32 @@ export function Pricing() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Link href="/signup" className="w-full">
-                <Button
-                  variant={plan.popular ? "default" : "outline"}
+              {plan.name === "Lifetime Deal" ? (
+                <a 
+                  href={process.env.NEXT_PUBLIC_CREEM_CHECKOUT_URL || "#"} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
                   className="w-full"
-                  size="lg"
                 >
-                  {plan.cta}
-                </Button>
-              </Link>
+                  <Button
+                    variant={plan.popular ? "default" : "outline"}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {plan.cta}
+                  </Button>
+                </a>
+              ) : (
+                <Link href="/signup" className="w-full">
+                  <Button
+                    variant={plan.popular ? "default" : "outline"}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {plan.cta}
+                  </Button>
+                </Link>
+              )}
             </CardFooter>
           </Card>
         ))}

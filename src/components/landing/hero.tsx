@@ -10,9 +10,14 @@ export function Hero() {
       <div className="grid gap-6 lg:grid-cols-2 lg:gap-8 items-center">
         {/* Left side - Content */}
         <div className="flex flex-col space-y-4">
-          <div className="lifetime-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 w-fit cursor-pointer">
+          <a 
+            href={process.env.NEXT_PUBLIC_CREEM_CHECKOUT_URL || "#"} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="lifetime-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/20 w-fit cursor-pointer hover:opacity-90 transition-opacity"
+          >
             <span className="text-sm font-semibold">🔥 Lifetime Deal - $39</span>
-          </div>
+          </a>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-left">
             Building a Waitlist
             <span className="text-primary"> Shouldn't Be Hard</span>
