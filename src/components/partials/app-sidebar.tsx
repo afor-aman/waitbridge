@@ -42,7 +42,7 @@ export function AppSidebar({ session }: AppSidebarProps) {
             <SidebarHeader>
                 <div className="flex items-center gap-3 p-2">
                     <Avatar>
-                        <AvatarImage src={session?.user?.image || ''} />
+                        {session?.user?.image && <AvatarImage src={session.user.image} />}
                         <AvatarFallback>{session?.user?.name?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col overflow-hidden">
