@@ -65,7 +65,7 @@ export function Hero() {
               ))}
             </div>
             <div className="flex flex-col">
-              <p className="text-sm font-medium text-foreground">10+ users</p>
+              <p className="text-sm font-medium text-foreground">30+ users</p>
               <p className="text-xs text-muted-foreground">Trusted by creators</p>
             </div>
           </div>
