@@ -12,9 +12,14 @@ export function NavBar() {
           </div>
           <span className="text-lg">Waitbridge</span>
         </Link>
-        <Link href="/login">
-          <Button variant="outline">Sign In</Button>
-        </Link>
+        <div className="flex items-center gap-6">
+          <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
+            Blog
+          </Link>
+          <Link href="/login">
+            <Button variant="outline">Sign In</Button>
+          </Link>
+        </div>
       </div>
     </nav>
   )

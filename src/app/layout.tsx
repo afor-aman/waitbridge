@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       
-      <Script
+      {/* <Script
 				id="g-script1"
 				strategy="lazyOnload"
 				src="https://www.googletagmanager.com/gtag/js?id=G-7H0D20QJGJ"
@@ -53,7 +53,7 @@ export default function RootLayout({
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
           })(window, document, "clarity", "script", "ufbtp5j6xw");
         `}
-      </Script>
+      </Script> */}
       
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
