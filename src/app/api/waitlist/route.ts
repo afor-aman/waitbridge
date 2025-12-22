@@ -38,17 +38,9 @@ export async function POST(request: Request) {
       return new Response('User not found', { status: 404 });
     }
 
-    // Check if user already has a waitlist (free tier limitation)
-    // Paid users can create unlimited waitlists
+    // Hard paywall: only paid users can create waitlists
     if (!fullUser.payment) {
-      const existingWaitlists = await db
-        .select()
-        .from(schema.waitlist)
-        .where(eq(schema.waitlist.userId, user.id));
-      
-      if (existingWaitlists.length > 0) {
-        return new Response('You can only create one waitlist on the free plan. Please upgrade to create unlimited waitlists.', { status: 403 });
-      }
+      return new Response('Payment required. Please upgrade to create waitlists.', { status: 403 });
     }
 
     const { name, description } = await request.json();

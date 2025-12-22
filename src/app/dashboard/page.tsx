@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Trash2, Eye, Loader2, Crown, Sparkles } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from "@/components/ui/card";
+import { Trash2, Eye, Loader2, Crown, Lock, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 
@@ -91,10 +90,6 @@ export default function Dashboard() {
     }
   };
 
-  // Free users can only have 1 waitlist, paid users can have unlimited
-  const hasWaitlist = waitlists.length > 0;
-  const isLimited = !isPaid && hasWaitlist;
-
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to delete "${name}"?`)) {
       return;
@@ -107,7 +102,6 @@ export default function Dashboard() {
       });
       if (res.ok) {
         fetchWaitlists(); // Refresh the list
-        fetchPaymentStatus(); // Refresh payment status in case it changed
       } else {
         const err = await res.text();
         alert(`Error: ${err}`);
@@ -120,46 +114,92 @@ export default function Dashboard() {
     }
   };
 
+  // Show loading state
+  if (paymentLoading || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  // Hard paywall: Show upgrade screen for non-paid users
+  if (!isPaid) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] p-4">
+        <Card className="max-w-lg w-full border-2 shadow-xl">
+          <CardHeader className="text-center pb-2">
+            <div className="mx-auto mb-4 rounded-full bg-primary/10 p-4 w-fit">
+              <Lock className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">Unlock Waitbridge</CardTitle>
+            <CardDescription className="text-base mt-2">
+              Get lifetime access to create unlimited waitlists and unlock all features with a one-time payment.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="bg-muted/50 rounded-lg p-4 mb-6">
+              <div className="flex items-baseline justify-center gap-2 mb-4">
+                <span className="text-4xl font-bold">$39</span>
+                <span className="text-muted-foreground">one-time</span>
+              </div>
+              <ul className="space-y-3">
+                {[
+                  "Unlimited waitlists",
+                  "Unlimited signups",
+                  "Full customization",
+                  "Analytics dashboard",
+                  "Export data",
+                  "No branding badge",
+                  "All future updates",
+                ].map((feature) => (
+                  <li key={feature} className="flex items-center gap-2 text-sm">
+                    <Check className="h-4 w-4 text-primary shrink-0" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-3">
+            <Button asChild size="lg" className="w-full">
+              <a
+                href={process.env.NEXT_PUBLIC_CREEM_CHECKOUT_URL!}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Get Lifetime Access
+              </a>
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              Secure payment via Creem. No subscription, pay once and own it forever.
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">Welcome to Dashboard!</h1>
-          {!paymentLoading && isPaid && (
-            <Badge variant="default" className="gap-1">
-              <Crown className="w-3 h-3" />
-              Pro
-            </Badge>
-          )}
+          <Badge variant="default" className="gap-1">
+            <Crown className="w-3 h-3" />
+            Pro
+          </Badge>
         </div>
-        <Dialog open={open} onOpenChange={(newOpen) => {
-          // Prevent opening dialog if free user already has a waitlist
-          if (newOpen && isLimited) return;
-          setOpen(newOpen);
-        }}>
-          {isLimited ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button disabled={isLimited}>
-                  Create Waitlist
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Free plan limit: You can only have one waitlist. Upgrade to create unlimited waitlists.</p>
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <DialogTrigger asChild>
-              <Button>Create Waitlist</Button>
-            </DialogTrigger>
-          )}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button>Create Waitlist</Button>
+          </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Waitlist</DialogTitle>
               <DialogDescription>
-                {isLimited 
-                  ? "You've reached the free plan limit of one waitlist. Upgrade to create unlimited waitlists."
-                  : "Enter a name and optional description."}
+                Enter a name and optional description.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -182,7 +222,7 @@ export default function Dashboard() {
                 <DialogClose asChild>
                   <Button variant="outline" disabled={createLoading}>Cancel</Button>
                 </DialogClose>
-                <Button type="submit" disabled={createLoading || isLimited}>
+                <Button type="submit" disabled={createLoading}>
                   {createLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -200,26 +240,8 @@ export default function Dashboard() {
 
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-4">Your Waitlists</h2>
-        {loading ? (
-          <p className="text-muted-foreground">Loading waitlists...</p>
-        ) : waitlists.length === 0 ? (
-          <div className="space-y-2">
-            <p className="text-muted-foreground">No waitlists yet. Create one to get started!</p>
-            {!paymentLoading && !isPaid && (
-              <p className="text-sm text-muted-foreground">
-                Free plan: You can create one waitlist.{" "}
-                <a 
-                  href="https://www.creem.io/payment/prod_oduYK1IJC54WJxQPrWq5P" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary underline hover:text-primary/80"
-                >
-                  Upgrade
-                </a>{" "}
-                to create unlimited waitlists.
-              </p>
-            )}
-          </div>
+        {waitlists.length === 0 ? (
+          <p className="text-muted-foreground">No waitlists yet. Create one to get started!</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {waitlists.map((waitlist) => (
@@ -265,41 +287,6 @@ export default function Dashboard() {
               </Card>
             ))}
           </div>
-        )}
-        
-        {/* Upgrade CTA for free users who have reached the limit */}
-        {!paymentLoading && !isPaid && hasWaitlist && (
-          <Card className="mt-6 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-            <CardHeader>
-              <div className="flex items-start gap-3">
-                <div className="rounded-full bg-primary/10 p-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <CardTitle className="text-lg mb-1">Upgrade to Pro</CardTitle>
-                  <CardDescription className="text-base">
-                    You've reached the free plan limit. Upgrade to create unlimited waitlists and unlock all features!
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardFooter className="pt-0">
-              <Button 
-                asChild
-                className="w-full sm:w-auto"
-                size="lg"
-              >
-                <a 
-                  href={process.env.NEXT_PUBLIC_CREEM_CHECKOUT_URL!} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Crown className="w-4 h-4 mr-2" />
-                  Upgrade Now
-                </a>
-              </Button>
-            </CardFooter>
-          </Card>
         )}
       </div>
     </div>
